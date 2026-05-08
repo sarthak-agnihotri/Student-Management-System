@@ -16,6 +16,57 @@
             background: #f0f2f5;
             color: #1a1a2e;
             padding: 20px;
+            transition: all 0.3s;
+        }
+
+        /* Dark Mode */
+        body.dark {
+            background: #1a1a2e;
+            color: #f0f2f5;
+        }
+
+        body.dark .card {
+            background: #2d3748;
+        }
+
+        body.dark th {
+            background: #1a202c;
+            color: #f0f2f5;
+        }
+
+        body.dark td {
+            border-bottom-color: #4a5568;
+        }
+
+        body.dark tr:hover {
+            background: #374151;
+        }
+
+        body.dark .search-box {
+            background: #2d3748;
+            border-color: #4a5568;
+            color: white;
+        }
+
+        body.dark input, body.dark select {
+            background: #2d3748;
+            border-color: #4a5568;
+            color: white;
+        }
+
+        body.dark .status-active {
+            background: #22543d;
+            color: #9ae6b4;
+        }
+
+        body.dark .status-inactive {
+            background: #742a2a;
+            color: #fed7d7;
+        }
+
+        body.dark .status-graduated {
+            background: #744210;
+            color: #feebc8;
         }
 
         .container {
@@ -36,6 +87,10 @@
         h1 {
             font-size: 2rem;
             color: #1a1a2e;
+        }
+
+        body.dark h1 {
+            color: #f0f2f5;
         }
 
         h1 span {
@@ -83,6 +138,7 @@
         .btn-group {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -133,6 +189,10 @@
             color: #1a1a2e;
             margin-bottom: 20px;
             font-size: 1.3rem;
+        }
+
+        body.dark .card h2 {
+            color: #f0f2f5;
         }
 
         /* Form */
@@ -189,6 +249,39 @@
             background: #f8f9fa;
             color: #1a1a2e;
             font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        th:hover {
+            background: #e2e8f0;
+        }
+
+        body.dark th:hover {
+            background: #2d3748;
+        }
+
+        .sort-icon {
+            margin-left: 8px;
+            font-size: 12px;
+            opacity: 0.5;
+            display: inline-block;
+        }
+
+        th.active-sort {
+            background: #e2e8f0;
+        }
+
+        body.dark th.active-sort {
+            background: #374151;
+        }
+
+        th.active-sort .sort-icon {
+            opacity: 1;
+            color: #667eea;
+            font-weight: bold;
         }
 
         tr:hover {
@@ -320,12 +413,19 @@
         </div>
 
         <div class="card">
-            <h2>📋 Student List</h2>
+            <h2>📋 Student List <span style="font-size: 12px; font-weight: normal;">(Click on column headers to sort)</span></h2>
             <div style="overflow-x: auto;">
                 <table id="studentTable">
                     <thead>
                         <tr>
-                            <th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Course</th><th>Age</th><th>Status</th><th>Actions</th>
+                            <th onclick="sortTable('id')">ID <span class="sort-icon" id="sort-icon-id">↕️</span></th>
+                            <th onclick="sortTable('name')">Name <span class="sort-icon" id="sort-icon-name">↕️</span></th>
+                            <th onclick="sortTable('email')">Email <span class="sort-icon" id="sort-icon-email">↕️</span></th>
+                            <th onclick="sortTable('phone')">Phone <span class="sort-icon" id="sort-icon-phone">↕️</span></th>
+                            <th onclick="sortTable('course')">Course <span class="sort-icon" id="sort-icon-course">↕️</span></th>
+                            <th onclick="sortTable('age')">Age <span class="sort-icon" id="sort-icon-age">↕️</span></th>
+                            <th onclick="sortTable('status')">Status <span class="sort-icon" id="sort-icon-status">↕️</span></th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="studentTableBody">
@@ -340,6 +440,10 @@
         const API_URL = 'http://localhost:8080/api/students';
         let currentEditId = null;
         let allStudents = [];
+        
+        // Sorting variables
+        let sortColumn = 'id';
+        let sortOrder = 'asc';
 
         function showMessage(text, type) {
             const msgDiv = document.getElementById('message');
@@ -365,13 +469,75 @@
             return `<span class="status-badge ${classes[status] || 'status-active'}">${icons[status] || '🟢'} ${status || 'ACTIVE'}</span>`;
         }
 
+        // Main sort function
+        function sortTable(column) {
+            if (sortColumn === column) {
+                sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortOrder = 'asc';
+            }
+            
+            updateSortIcons();
+            
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            let dataToSort = [...allStudents];
+            
+            if (searchTerm !== '') {
+                dataToSort = dataToSort.filter(s => 
+                    s.name.toLowerCase().includes(searchTerm) ||
+                    s.email.toLowerCase().includes(searchTerm) ||
+                    (s.course && s.course.toLowerCase().includes(searchTerm)) ||
+                    (s.phone && s.phone.includes(searchTerm))
+                );
+            }
+            
+            const sorted = dataToSort.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+                
+                if (column === 'age' || column === 'id') {
+                    return sortOrder === 'asc' ? valA - valB : valB - valA;
+                } else if (column === 'status') {
+                    const order = { 'ACTIVE': 1, 'GRADUATED': 2, 'INACTIVE': 3 };
+                    valA = order[valA] || 999;
+                    valB = order[valB] || 999;
+                    return sortOrder === 'asc' ? valA - valB : valB - valA;
+                } else {
+                    valA = (valA || '').toLowerCase();
+                    valB = (valB || '').toLowerCase();
+                    if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                    if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                    return 0;
+                }
+            });
+            
+            displayStudents(sorted);
+            updateTotalCount(sorted.length);
+        }
+
+        function updateSortIcons() {
+            const columns = ['id', 'name', 'email', 'phone', 'course', 'age', 'status'];
+            columns.forEach(col => {
+                const icon = document.getElementById(`sort-icon-${col}`);
+                if (icon) {
+                    if (sortColumn === col) {
+                        icon.textContent = sortOrder === 'asc' ? '↑' : '↓';
+                        icon.style.opacity = '1';
+                    } else {
+                        icon.textContent = '↕️';
+                        icon.style.opacity = '0.5';
+                    }
+                }
+            });
+        }
+
         async function loadStudents() {
             try {
                 const response = await fetch(API_URL);
                 if (!response.ok) throw new Error('Failed to fetch');
                 allStudents = await response.json();
-                displayStudents(allStudents);
-                updateTotalCount(allStudents.length);
+                sortTable('id');
             } catch (error) {
                 document.getElementById('studentTableBody').innerHTML = 
                     `<tr><td colspan="8" style="text-align: center; color: red;">Error loading students. Make sure backend is running.</td></tr>`;
@@ -381,8 +547,7 @@
         function searchStudents() {
             const term = document.getElementById('searchInput').value.toLowerCase();
             if (term === '') {
-                displayStudents(allStudents);
-                updateTotalCount(allStudents.length);
+                sortTable(sortColumn);
                 return;
             }
             const filtered = allStudents.filter(s => 
@@ -391,8 +556,27 @@
                 (s.course && s.course.toLowerCase().includes(term)) ||
                 (s.phone && s.phone.includes(term))
             );
-            displayStudents(filtered);
-            updateTotalCount(filtered.length);
+            
+            const sortedFiltered = [...filtered].sort((a, b) => {
+                let valA = a[sortColumn];
+                let valB = b[sortColumn];
+                if (sortColumn === 'age' || sortColumn === 'id') {
+                    return sortOrder === 'asc' ? valA - valB : valB - valA;
+                } else if (sortColumn === 'status') {
+                    const order = { 'ACTIVE': 1, 'GRADUATED': 2, 'INACTIVE': 3 };
+                    valA = order[valA] || 999;
+                    valB = order[valB] || 999;
+                    return sortOrder === 'asc' ? valA - valB : valB - valA;
+                } else {
+                    valA = (valA || '').toLowerCase();
+                    valB = (valB || '').toLowerCase();
+                    if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                    if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                    return 0;
+                }
+            });
+            displayStudents(sortedFiltered);
+            updateTotalCount(sortedFiltered.length);
         }
 
         function displayStudents(students) {
@@ -414,7 +598,7 @@
                         <button class="edit-btn" onclick="editStudent(${s.id})">✏️ Edit</button>
                         <button class="delete-btn" onclick="deleteStudent(${s.id})">🗑️ Delete</button>
                     </td>
-                <tr>
+                </tr>
             `).join('');
         }
 
@@ -423,16 +607,26 @@
         }
 
         function downloadCSV() {
-            const students = document.getElementById('searchInput').value === '' ? allStudents : 
-                allStudents.filter(s => s.name.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()));
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            let students = [...allStudents];
+            if (term !== '') {
+                students = students.filter(s => 
+                    s.name.toLowerCase().includes(term) ||
+                    s.email.toLowerCase().includes(term) ||
+                    (s.course && s.course.toLowerCase().includes(term))
+                );
+            }
+            
             if (students.length === 0) {
                 showMessage('No students to export!', 'error');
                 return;
             }
+            
             let csv = "ID,Name,Email,Phone,Course,Age,Status\n";
             students.forEach(s => {
                 csv += `"${s.id}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}"\n`;
             });
+            
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -496,7 +690,7 @@
                     showMessage('Student added!', 'success');
                     clearForm();
                 }
-                loadStudents();
+                await loadStudents();
             } catch (error) {
                 showMessage(error.message, 'error');
             }
@@ -521,7 +715,7 @@
             if (confirm('Delete this student?')) {
                 await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
                 showMessage('Student deleted!', 'success');
-                loadStudents();
+                await loadStudents();
             }
         }
 
@@ -543,12 +737,14 @@
         }
 
         function toggleDarkMode() {
-            document.body.style.background = document.body.style.background === 'rgb(26, 26, 46)' ? '#f0f2f5' : '#1a1a2e';
-            document.body.style.color = document.body.style.color === 'rgb(26, 26, 46)' ? '#f0f2f5' : '#1a1a2e';
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                card.style.background = card.style.background === 'rgb(255, 255, 255)' ? '#2d3748' : '#ffffff';
-            });
+            document.body.classList.toggle('dark');
+            const btn = document.querySelector('.btn-dark');
+            btn.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+            localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+        }
+
+        if (localStorage.getItem('darkMode') === 'true') {
+            toggleDarkMode();
         }
 
         loadStudents();
