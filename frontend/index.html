@@ -29,6 +29,10 @@
             background: #2d3748;
         }
 
+        body.dark .status-card {
+            background: #2d3748;
+        }
+
         body.dark th {
             background: #1a202c;
             color: #f0f2f5;
@@ -90,6 +94,10 @@
             color: #f0f2f5;
         }
 
+        body.dark .status-label {
+            color: #a0aec0;
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -119,6 +127,55 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
+        /* Status Summary Cards */
+        .status-summary {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .status-icon {
+            font-size: 28px;
+        }
+
+        .status-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .status-count {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .status-card.active .status-count { color: #48bb78; }
+        .status-card.inactive .status-count { color: #f56565; }
+        .status-card.graduated .status-count { color: #ed8936; }
 
         /* Stats Bar */
         .stats-bar {
@@ -375,7 +432,7 @@
             transform: translateY(-1px);
         }
 
-        /* Modal Styles - FIXED */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -557,6 +614,9 @@
                 flex-direction: column;
                 align-items: stretch;
             }
+            .status-summary {
+                flex-direction: column;
+            }
             .search-box {
                 width: 100%;
             }
@@ -593,6 +653,31 @@
         </div>
 
         <div id="message" class="message"></div>
+
+        <!-- Status Summary Cards -->
+        <div class="status-summary" id="statusSummary">
+            <div class="status-card active">
+                <div class="status-icon">🟢</div>
+                <div class="status-info">
+                    <span class="status-label">Active Students</span>
+                    <span class="status-count" id="activeCount">0</span>
+                </div>
+            </div>
+            <div class="status-card inactive">
+                <div class="status-icon">🔴</div>
+                <div class="status-info">
+                    <span class="status-label">Inactive Students</span>
+                    <span class="status-count" id="inactiveCount">0</span>
+                </div>
+            </div>
+            <div class="status-card graduated">
+                <div class="status-icon">🟠</div>
+                <div class="status-info">
+                    <span class="status-label">Graduated Students</span>
+                    <span class="status-count" id="graduatedCount">0</span>
+                </div>
+            </div>
+        </div>
 
         <div class="stats-bar">
             <div class="total-count" id="totalCount">📊 Total Students: 0</div>
@@ -695,6 +780,17 @@
                 'GRADUATED': '🟠'
             };
             return `<span class="status-badge ${classes[status] || 'status-active'}">${icons[status] || '🟢'} ${status || 'ACTIVE'}</span>`;
+        }
+
+        // Update status counts
+        function updateStatusCounts(students) {
+            const active = students.filter(s => s.status === 'ACTIVE').length;
+            const inactive = students.filter(s => s.status === 'INACTIVE').length;
+            const graduated = students.filter(s => s.status === 'GRADUATED').length;
+            
+            document.getElementById('activeCount').textContent = active;
+            document.getElementById('inactiveCount').textContent = inactive;
+            document.getElementById('graduatedCount').textContent = graduated;
         }
 
         function getInitials(name) {
@@ -807,6 +903,7 @@
             
             displayStudents(sorted);
             updateTotalCount(sorted.length);
+            updateStatusCounts(sorted);
         }
 
         function updateSortIcons() {
@@ -862,7 +959,7 @@
                             <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Course</th>
                             <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Age</th>
                             <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Status</th>
-                        </table>
+                        </tr>
                     </thead>
                     <tbody>
                         ${studentsToExport.map(s => `
@@ -900,6 +997,7 @@
                 if (!response.ok) throw new Error('Failed to fetch');
                 allStudents = await response.json();
                 sortTable('id');
+                updateStatusCounts(allStudents);
             } catch (error) {
                 document.getElementById('studentTableBody').innerHTML = 
                     `<tr><td colspan="8" style="text-align: center; color: red;">Error loading students. Make sure backend is running. Sedan`;
@@ -910,6 +1008,7 @@
             const term = document.getElementById('searchInput').value.toLowerCase();
             if (term === '') {
                 sortTable(sortColumn);
+                updateStatusCounts(allStudents);
                 return;
             }
             const filtered = allStudents.filter(s => 
@@ -939,6 +1038,7 @@
             });
             displayStudents(sortedFiltered);
             updateTotalCount(sortedFiltered.length);
+            updateStatusCounts(sortedFiltered);
         }
 
         function displayStudents(students) {
