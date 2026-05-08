@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Light Mode (Default) */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: white;
+            --text-color: #333;
+            --table-header: #667eea;
+            --table-row-hover: #f7fafc;
+            --border-color: #ddd;
+            --input-border: #ddd;
+        }
+
+        /* Dark Mode */
+        body.dark {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --card-bg: #1e1e2e;
+            --text-color: #e0e0e0;
+            --table-header: #0f3460;
+            --table-row-hover: #2a2a3e;
+            --border-color: #333;
+            --input-border: #444;
+            background: #1a1a2e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* Header with Dark Mode Toggle */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .dark-mode-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .dark-mode-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card h2 {
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .total-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+        }
+
+        .search-box {
+            padding: 10px;
+            width: 300px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            font-size: 14px;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-csv {
+            background: #48bb78;
+            color: white;
+            border: none;
+        }
+
+        .btn-print {
+            background: #ed8936;
+            color: white;
+            border: none;
+        }
+
+        .btn-csv:hover, .btn-print:hover {
+            transform: translateY(-2px);
+        }
+
+        .form-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 5px;
+            font-size: 14px;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        th {
+            background: var(--table-header);
+            color: white;
+        }
+
+        tr:hover {
+            background: var(--table-row-hover);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #48bb78;
+            color: white;
+        }
+
+        .status-inactive {
+            background: #f56565;
+            color: white;
+        }
+
+        .status-graduated {
+            background: #ed8936;
+            color: white;
+        }
+
+        .edit-btn {
+            background: #48bb78;
+            margin-right: 5px;
+        }
+
+        .delete-btn {
+            background: #f56565;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+
+        /* Keyboard Shortcuts Hint */
+        .shortcuts-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .shortcuts-hint:hover {
+            transform: scale(1.05);
+        }
+
+        .shortcuts-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .shortcuts-modal.show {
+            display: flex;
+        }
+
+        .shortcuts-content {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .shortcuts-content h3 {
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+
+        .shortcuts-content ul {
+            list-style: none;
+            color: var(--text-color);
+        }
+
+        .shortcuts-content li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .shortcut-key {
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .form-group {
+                flex-direction: column;
+            }
+            .stats-bar {
+                flex-direction: column;
+            }
+            .search-box {
+                width: 100%;
+            }
+            .btn-group {
+                width: 100%;
+            }
+            .btn-group button {
+                flex: 1;
+            }
+            table {
+                font-size: 12px;
+            }
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Student Management System</h1>
+            <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <div class="stats-bar">
+            <div class="total-count" id="totalCount">📊 Total Students: 0</div>
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by name, email, or course..." onkeyup="searchStudents()">
+            <div class="btn-group">
+                <button onclick="downloadCSV()" class="btn btn-csv">📥 Download CSV</button>
+                <button onclick="window.print()" class="btn btn-print">🖨️ Print</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 id="formTitle">Add New Student</h2>
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Full Name" required>
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="tel" id="phone" placeholder="Phone Number (10 digits)">
+                <input type="text" id="course" placeholder="Course Name" required>
+                <input type="number" id="age" placeholder="Age" required>
+                <select id="status">
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                    <option value="GRADUATED">Graduated</option>
+                </select>
+                <button onclick="saveStudent()" id="saveBtn">Add Student</button>
+                <button onclick="cancelEdit()" id="cancelBtn" style="display:none;">Cancel</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Student List</h2>
+            <div style="overflow-x: auto;">
+                <table id="studentTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Course</th>
+                            <th>Age</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <tr>
+                            <td colspan="9" style="text-align: center;">Loading students...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Hint -->
+    <div class="shortcuts-hint" onclick="showShortcuts()">
+        ⌨️ Keyboard Shortcuts
+    </div>
+
+    <!-- Shortcuts Modal -->
+    <div id="shortcutsModal" class="shortcuts-modal">
+        <div class="shortcuts-content">
+            <h3>⌨️ Keyboard Shortcuts</h3>
+            <ul>
+                <li><span class="shortcut-key">Ctrl + N</span> New Student (Focus form)</li>
+                <li><span class="shortcut-key">Ctrl + S</span> Save Student</li>
+                <li><span class="shortcut-key">Ctrl + F</span> Focus Search Box</li>
+                <li><span class="shortcut-key">Ctrl + P</span> Print List</li>
+                <li><span class="shortcut-key">Ctrl + D</span> Toggle Dark Mode</li>
+                <li><span class="shortcut-key">Esc</span> Cancel Edit / Close Modal</li>
+                <li><span class="shortcut-key">?</span> Show this help</li>
+            </ul>
+            <button onclick="closeShortcuts()" style="margin-top: 15px; width: 100%;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api/students';
+        let currentEditId = null;
+        let allStudents = [];
+
+        function showMessage(text, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = text;
+            msgDiv.className = `message ${type}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Get status badge HTML
+        function getStatusBadge(status) {
+            if (!status) status = 'ACTIVE';
+            const classes = {
+                'ACTIVE': 'status-active',
+                'INACTIVE': 'status-inactive',
+                'GRADUATED': 'status-graduated'
+            };
+            return `<span class="status-badge ${classes[status] || 'status-active'}">${status}</span>`;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        }
+
+        async function loadStudents() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to fetch');
+                allStudents = await response.json();
+                displayStudents(allStudents);
+                updateTotalCount(allStudents.length);
+            } catch (error) {
+                document.getElementById('studentTableBody').innerHTML = 
+                    `<tr><td colspan="9" style="text-align: center; color: red;">Error loading students. Make sure backend is running.</td></tr>`;
+            }
+        }
+
+        function searchStudents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm === '') {
+                displayStudents(allStudents);
+                updateTotalCount(allStudents.length);
+                return;
+            }
+            const filtered = allStudents.filter(student => 
+                student.name.toLowerCase().includes(searchTerm) ||
+                student.email.toLowerCase().includes(searchTerm) ||
+                (student.course && student.course.toLowerCase().includes(searchTerm)) ||
+                (student.phone && student.phone.includes(searchTerm))
+            );
+            displayStudents(filtered);
+            updateTotalCount(filtered.length);
+        }
+
+        function displayStudents(students) {
+            const tbody = document.getElementById('studentTableBody');
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No students found.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = students.map(student => `
+                <tr>
+                    <td>${student.id}</td>
+                    <td>${escapeHtml(student.name)}</td>
+                    <td>${escapeHtml(student.email)}</td>
+                    <td>${student.phone ? escapeHtml(student.phone) : '-'}</td>
+                    <td>${escapeHtml(student.course)}</td>
+                    <td>${student.age}</td>
+                    <td>${getStatusBadge(student.status)}</td>
+                    <td>
+                        <button class="edit-btn" onclick="editStudent(${student.id})">✏️ Edit</button>
+                        <button class="delete-btn" onclick="deleteStudent(${student.id})">🗑️ Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateTotalCount(count) {
+            document.getElementById('totalCount').textContent = `📊 Total Students: ${count}`;
+        }
+
+        function downloadCSV() {
+            const students = document.getElementById('searchInput').value === '' ? allStudents : 
+                allStudents.filter(s => s.name.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()));
+            if (students.length === 0) {
+                showMessage('No students to export!', 'error');
+                return;
+            }
+            let csv = "ID,Name,Email,Phone,Course,Age,Status,EnrollmentDate\n";
+            students.forEach(s => {
+                csv += `"${s.id}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}","${s.enrollmentDate || ''}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `students_${new Date().toISOString().slice(0,19)}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            showMessage(`Downloaded ${students.length} students!`, 'success');
+        }
+
+        function escapeCsv(text) {
+            if (!text) return '';
+            return text.replace(/"/g, '""');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function saveStudent() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const course = document.getElementById('course').value.trim();
+            const age = parseInt(document.getElementById('age').value);
+            const status = document.getElementById('status').value;
+
+            if (!name || !email || !course || !age) {
+                showMessage('Please fill all required fields!', 'error');
+                return;
+            }
+            if (age < 18 || age > 100) {
+                showMessage('Age must be between 18 and 100!', 'error');
+                return;
+            }
+            if (phone && !/^\d{10}$/.test(phone)) {
+                showMessage('Phone number must be 10 digits!', 'error');
+                return;
+            }
+
+            const student = { name, email, phone, course, age, status };
+
+            try {
+                if (currentEditId) {
+                    await fetch(`${API_URL}/${currentEditId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(student)
+                    });
+                    showMessage('Student updated successfully!', 'success');
+                    cancelEdit();
+                } else {
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(student)
+                    });
+                    showMessage('Student added successfully!', 'success');
+                    clearForm();
+                }
+                loadStudents();
+            } catch (error) {
+                showMessage(error.message, 'error');
+            }
+        }
+
+        async function editStudent(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                const student = await response.json();
+                document.getElementById('name').value = student.name;
+                document.getElementById('email').value = student.email;
+                document.getElementById('phone').value = student.phone || '';
+                document.getElementById('course').value = student.course;
+                document.getElementById('age').value = student.age;
+                document.getElementById('status').value = student.status || 'ACTIVE';
+                currentEditId = id;
+                document.getElementById('formTitle').textContent = 'Edit Student';
+                document.getElementById('saveBtn').textContent = 'Update Student';
+                document.getElementById('cancelBtn').style.display = 'inline-block';
+                document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                showMessage('Error loading student data', 'error');
+            }
+        }
+
+        async function deleteStudent(id) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                try {
+                    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                    showMessage('Student deleted successfully!', 'success');
+                    loadStudents();
+                } catch (error) {
+                    showMessage('Error deleting student', 'error');
+                }
+            }
+        }
+
+        function cancelEdit() {
+            clearForm();
+            currentEditId = null;
+            document.getElementById('formTitle').textContent = 'Add New Student';
+            document.getElementById('saveBtn').textContent = 'Add Student';
+            document.getElementById('cancelBtn').style.display = 'none';
+        }
+
+        function clearForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('course').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('status').value = 'ACTIVE';
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+            const btn = document.querySelector('.dark-mode-btn');
+            btn.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+            localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+        }
+
+        // Load saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            toggleDarkMode();
+        }
+
+        // Keyboard Shortcuts
+        function showShortcuts() {
+            document.getElementById('shortcutsModal').classList.add('show');
+        }
+
+        function closeShortcuts() {
+            document.getElementById('shortcutsModal').classList.remove('show');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            // Ctrl + N - New Student
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                cancelEdit();
+                document.getElementById('name').focus();
+                showMessage('Form cleared! Add new student.', 'success');
+            }
+            // Ctrl + S - Save
+            else if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveStudent();
+            }
+            // Ctrl + F - Focus Search
+            else if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                document.getElementById('searchInput').focus();
+                showMessage('Search box focused!', 'success');
+            }
+            // Ctrl + P - Print
+            else if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+            // Ctrl + D - Dark Mode
+            else if (e.ctrlKey && e.key === 'd') {
+                e.preventDefault();
+                toggleDarkMode();
+            }
+            // Esc - Cancel Edit
+            else if (e.key === 'Escape') {
+                if (currentEditId) {
+                    cancelEdit();
+                    showMessage('Edit cancelled!', 'success');
+                }
+                closeShortcuts();
+            }
+            // ? - Show Shortcuts
+            else if (e.key === '?') {
+                e.preventDefault();
+                showShortcuts();
+            }
+        });
+
+        loadStudents();
+    </script>
+</body>
+</html>
