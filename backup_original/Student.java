@@ -31,28 +31,19 @@ public class Student {
     @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be 10 digits")
     private String phone;
     
-    // Status field
+    // NEW: Status field
     @Column(nullable = false)
     private String status = "ACTIVE";
     
-    // ✅ NEW: Roll Number field
-    @Column(unique = true)
-    private String rollNumber;
-    
-    // ✅ NEW: Student Class field (e.g., 10th, 12th)
-    private String studentClass;
-    
     public Student() {}
     
-    public Student(String name, String email, String course, int age, String phone, String status, String rollNumber, String studentClass) {
+    public Student(String name, String email, String course, int age, String phone, String status) {
         this.name = name;
         this.email = email;
         this.course = course;
         this.age = age;
         this.phone = phone;
         this.status = status != null ? status : "ACTIVE";
-        this.rollNumber = rollNumber;
-        this.studentClass = studentClass;
     }
     
     // Getters and Setters
@@ -74,14 +65,7 @@ public class Student {
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
     
+    // NEW: Status getter and setter
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-    
-    // ✅ NEW: Roll Number getter and setter
-    public String getRollNumber() { return rollNumber; }
-    public void setRollNumber(String rollNumber) { this.rollNumber = rollNumber; }
-    
-    // ✅ NEW: Student Class getter and setter
-    public String getStudentClass() { return studentClass; }
-    public void setStudentClass(String studentClass) { this.studentClass = studentClass; }
 }

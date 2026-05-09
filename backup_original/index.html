@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        /* Dark Mode */
+        body.dark {
+            background: #1a1a2e;
+            color: #f0f2f5;
+        }
+
+        body.dark .card {
+            background: #2d3748;
+        }
+
+        body.dark .status-card {
+            background: #2d3748;
+        }
+
+        body.dark th {
+            background: #1a202c;
+            color: #f0f2f5;
+        }
+
+        body.dark td {
+            border-bottom-color: #4a5568;
+        }
+
+        body.dark tr:hover {
+            background: #374151;
+        }
+
+        body.dark .search-box {
+            background: #2d3748;
+            border-color: #4a5568;
+            color: white;
+        }
+
+        body.dark input, body.dark select {
+            background: #2d3748;
+            border-color: #4a5568;
+            color: white;
+        }
+
+        body.dark .status-active {
+            background: #22543d;
+            color: #9ae6b4;
+        }
+
+        body.dark .status-inactive {
+            background: #742a2a;
+            color: #fed7d7;
+        }
+
+        body.dark .status-graduated {
+            background: #744210;
+            color: #feebc8;
+        }
+
+        body.dark .modal-content {
+            background: #2d3748;
+            color: #f0f2f5;
+        }
+
+        body.dark .modal-footer {
+            background: #1a202c;
+        }
+
+        body.dark .detail-value {
+            color: #f0f2f5;
+        }
+
+        body.dark .profile-detail {
+            border-bottom-color: #4a5568;
+        }
+
+        body.dark .close {
+            color: #f0f2f5;
+        }
+
+        body.dark .status-label {
+            color: #a0aec0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #1a1a2e;
+        }
+
+        body.dark h1 {
+            color: #f0f2f5;
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Status Summary Cards */
+        .status-summary {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .status-icon {
+            font-size: 28px;
+        }
+
+        .status-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .status-count {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .status-card.active .status-count { color: #48bb78; }
+        .status-card.inactive .status-count { color: #f56565; }
+        .status-card.graduated .status-count { color: #ed8936; }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .total-count {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-box {
+            padding: 12px 20px;
+            width: 300px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-csv {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-pdf {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-print {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-dark {
+            background: #2d3748;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        body.dark .card h2 {
+            color: #f0f2f5;
+        }
+
+        /* Form */
+        .form-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #1a1a2e;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        th:hover {
+            background: #e2e8f0;
+        }
+
+        body.dark th:hover {
+            background: #2d3748;
+        }
+
+        .sort-icon {
+            margin-left: 8px;
+            font-size: 12px;
+            opacity: 0.5;
+            display: inline-block;
+        }
+
+        th.active-sort {
+            background: #e2e8f0;
+        }
+
+        body.dark th.active-sort {
+            background: #374151;
+        }
+
+        th.active-sort .sort-icon {
+            opacity: 1;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* Clickable Name */
+        .clickable-name {
+            cursor: pointer;
+            color: #667eea;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .clickable-name:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        body.dark .clickable-name {
+            color: #9ae6b4;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-inactive {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .status-graduated {
+            background: #feebc8;
+            color: #744210;
+        }
+
+        /* Action Buttons */
+        .edit-btn {
+            background: #4299e1;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .delete-btn {
+            background: #f56565;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .edit-btn:hover, .delete-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 480px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 15px 20px;
+            border-radius: 20px 20px 0 0;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            line-height: 1;
+        }
+
+        .close:hover {
+            transform: scale(1.2);
+        }
+
+        .modal-body {
+            padding: 20px 25px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .profile-avatar {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .profile-detail {
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 85px;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .modal-footer {
+            padding: 12px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            background: #f8f9fa;
+            border-radius: 0 0 20px 20px;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .modal-btn {
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .modal-btn:first-child {
+            background: #a0aec0;
+            color: white;
+        }
+
+        .modal-btn:last-child {
+            background: #4299e1;
+            color: white;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Message */
+        .message {
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+            border-left: 4px solid #48bb78;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+            border-left: 4px solid #f56565;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-group {
+                flex-direction: column;
+            }
+            .stats-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .status-summary {
+                flex-direction: column;
+            }
+            .search-box {
+                width: 100%;
+            }
+            .btn-group {
+                justify-content: center;
+            }
+            table {
+                font-size: 12px;
+            }
+            th, td {
+                padding: 8px;
+            }
+            .profile-detail {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 <span>Student Management System</span></h1>
+            <button class="btn btn-dark" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <!-- Status Summary Cards -->
+        <div class="status-summary" id="statusSummary">
+            <div class="status-card active">
+                <div class="status-icon">🟢</div>
+                <div class="status-info">
+                    <span class="status-label">Active Students</span>
+                    <span class="status-count" id="activeCount">0</span>
+                </div>
+            </div>
+            <div class="status-card inactive">
+                <div class="status-icon">🔴</div>
+                <div class="status-info">
+                    <span class="status-label">Inactive Students</span>
+                    <span class="status-count" id="inactiveCount">0</span>
+                </div>
+            </div>
+            <div class="status-card graduated">
+                <div class="status-icon">🟠</div>
+                <div class="status-info">
+                    <span class="status-label">Graduated Students</span>
+                    <span class="status-count" id="graduatedCount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="total-count" id="totalCount">📊 Total Students: 0</div>
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by name, email, or course..." onkeyup="searchStudents()">
+            <div class="btn-group">
+                <button onclick="downloadCSV()" class="btn btn-csv">📥 Download CSV</button>
+                <button onclick="exportToPDF()" class="btn btn-pdf">📄 Export PDF</button>
+                <button onclick="window.print()" class="btn btn-print">🖨️ Print</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 id="formTitle">➕ Add New Student</h2>
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Full Name" required>
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="tel" id="phone" placeholder="Phone Number (10 digits)">
+                <input type="text" id="course" placeholder="Course Name" required>
+                <input type="number" id="age" placeholder="Age" required>
+                <select id="status">
+                    <option value="ACTIVE">🟢 Active</option>
+                    <option value="INACTIVE">🔴 Inactive</option>
+                    <option value="GRADUATED">🟠 Graduated</option>
+                </select>
+                <button onclick="saveStudent()" id="saveBtn">Add Student</button>
+                <button onclick="cancelEdit()" id="cancelBtn" style="display:none;">Cancel</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Student List <span style="font-size: 12px; font-weight: normal;">(Click on student name to view profile)</span></h2>
+            <div style="overflow-x: auto;">
+                <table id="studentTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('id')">ID <span class="sort-icon" id="sort-icon-id">↕️</span></th>
+                            <th onclick="sortTable('name')">Name <span class="sort-icon" id="sort-icon-name">↕️</span></th>
+                            <th onclick="sortTable('email')">Email <span class="sort-icon" id="sort-icon-email">↕️</span></th>
+                            <th onclick="sortTable('phone')">Phone <span class="sort-icon" id="sort-icon-phone">↕️</span></th>
+                            <th onclick="sortTable('course')">Course <span class="sort-icon" id="sort-icon-course">↕️</span></th>
+                            <th onclick="sortTable('age')">Age <span class="sort-icon" id="sort-icon-age">↕️</span></th>
+                            <th onclick="sortTable('status')">Status <span class="sort-icon" id="sort-icon-status">↕️</span></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <tr><td colspan="8" style="text-align: center;">Loading students...Sedan
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👤 Student Profile</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeModal()">Close</button>
+                <button class="modal-btn" id="modalEditBtn">✏️ Edit Student</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api/students';
+        let currentEditId = null;
+        let allStudents = [];
+        let currentModalStudent = null;
+        
+        // Sorting variables
+        let sortColumn = 'id';
+        let sortOrder = 'asc';
+
+        function showMessage(text, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = text;
+            msgDiv.className = `message ${type}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function getStatusBadge(status) {
+            const classes = {
+                'ACTIVE': 'status-active',
+                'INACTIVE': 'status-inactive',
+                'GRADUATED': 'status-graduated'
+            };
+            const icons = {
+                'ACTIVE': '🟢',
+                'INACTIVE': '🔴',
+                'GRADUATED': '🟠'
+            };
+            return `<span class="status-badge ${classes[status] || 'status-active'}">${icons[status] || '🟢'} ${status || 'ACTIVE'}</span>`;
+        }
+
+        // Update status counts
+        function updateStatusCounts(students) {
+            const active = students.filter(s => s.status === 'ACTIVE').length;
+            const inactive = students.filter(s => s.status === 'INACTIVE').length;
+            const graduated = students.filter(s => s.status === 'GRADUATED').length;
+            
+            document.getElementById('activeCount').textContent = active;
+            document.getElementById('inactiveCount').textContent = inactive;
+            document.getElementById('graduatedCount').textContent = graduated;
+        }
+
+        function getInitials(name) {
+            if (!name) return '?';
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
+
+        function showProfile(student) {
+            currentModalStudent = student;
+            const modalBody = document.getElementById('modalBody');
+            
+            const statusIcon = {
+                'ACTIVE': '🟢',
+                'INACTIVE': '🔴',
+                'GRADUATED': '🟠'
+            };
+            
+            modalBody.innerHTML = `
+                <div class="profile-avatar">
+                    <div class="avatar-circle">${getInitials(student.name)}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="detail-label">📋 ID:</div>
+                    <div class="detail-value">${student.id}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="detail-label">👤 Name:</div>
+                    <div class="detail-value">${escapeHtml(student.name)}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="detail-label">📧 Email:</div>
+                    <div class="detail-value">${escapeHtml(student.email)}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="detail-label">📞 Phone:</div>
+                    <div class="detail-value">${student.phone || 'Not provided'}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="detail-label">📚 Course:</div>
+                    <div class="detail-value">${escapeHtml(student.course)}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="detail-label">🎂 Age:</div>
+                    <div class="detail-value">${student.age} years</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="detail-label">📊 Status:</div>
+                    <div class="detail-value">${statusIcon[student.status] || '🟢'} ${student.status || 'ACTIVE'}</div>
+                </div>
+            `;
+            
+            document.getElementById('profileModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('profileModal').style.display = 'none';
+            currentModalStudent = null;
+        }
+
+        function editFromModal() {
+            if (currentModalStudent) {
+                closeModal();
+                setTimeout(() => {
+                    editStudent(currentModalStudent.id);
+                }, 100);
+            }
+        }
+
+        function sortTable(column) {
+            if (sortColumn === column) {
+                sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortOrder = 'asc';
+            }
+            
+            updateSortIcons();
+            
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            let dataToSort = [...allStudents];
+            
+            if (searchTerm !== '') {
+                dataToSort = dataToSort.filter(s => 
+                    s.name.toLowerCase().includes(searchTerm) ||
+                    s.email.toLowerCase().includes(searchTerm) ||
+                    (s.course && s.course.toLowerCase().includes(searchTerm)) ||
+                    (s.phone && s.phone.includes(searchTerm))
+                );
+            }
+            
+            const sorted = dataToSort.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+                
+                if (column === 'age' || column === 'id') {
+                    return sortOrder === 'asc' ? valA - valB : valB - valA;
+                } else if (column === 'status') {
+                    const order = { 'ACTIVE': 1, 'GRADUATED': 2, 'INACTIVE': 3 };
+                    valA = order[valA] || 999;
+                    valB = order[valB] || 999;
+                    return sortOrder === 'asc' ? valA - valB : valB - valA;
+                } else {
+                    valA = (valA || '').toLowerCase();
+                    valB = (valB || '').toLowerCase();
+                    if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                    if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                    return 0;
+                }
+            });
+            
+            displayStudents(sorted);
+            updateTotalCount(sorted.length);
+            updateStatusCounts(sorted);
+        }
+
+        function updateSortIcons() {
+            const columns = ['id', 'name', 'email', 'phone', 'course', 'age', 'status'];
+            columns.forEach(col => {
+                const icon = document.getElementById(`sort-icon-${col}`);
+                if (icon) {
+                    if (sortColumn === col) {
+                        icon.textContent = sortOrder === 'asc' ? '↑' : '↓';
+                        icon.style.opacity = '1';
+                    } else {
+                        icon.textContent = '↕️';
+                        icon.style.opacity = '0.5';
+                    }
+                }
+            });
+        }
+
+        function exportToPDF() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            let studentsToExport = [...allStudents];
+            
+            if (term !== '') {
+                studentsToExport = studentsToExport.filter(s => 
+                    s.name.toLowerCase().includes(term) ||
+                    s.email.toLowerCase().includes(term) ||
+                    (s.course && s.course.toLowerCase().includes(term))
+                );
+            }
+            
+            if (studentsToExport.length === 0) {
+                showMessage('No students to export!', 'error');
+                return;
+            }
+            
+            const pdfContent = document.createElement('div');
+            pdfContent.style.padding = '20px';
+            pdfContent.style.fontFamily = 'Arial, sans-serif';
+            
+            pdfContent.innerHTML = `
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #667eea;">🎓 Student Management System</h1>
+                    <p>Generated on: ${new Date().toLocaleString()}</p>
+                    <hr>
+                </div>
+                <h2>Student List</h2>
+                <p><strong>Total Students:</strong> ${studentsToExport.length}</p>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr><th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">ID</th>
+                            <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Name</th>
+                            <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Email</th>
+                            <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Course</th>
+                            <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Age</th>
+                            <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${studentsToExport.map(s => `
+                            <tr>
+                                <td style="border:1px solid #ddd;padding:8px;">${s.id}</td>
+                                <td style="border:1px solid #ddd;padding:8px;">${escapeHtml(s.name)}</td>
+                                <td style="border:1px solid #ddd;padding:8px;">${escapeHtml(s.email)}</td>
+                                <td style="border:1px solid #ddd;padding:8px;">${escapeHtml(s.course)}</td>
+                                <td style="border:1px solid #ddd;padding:8px;">${s.age}</td>
+                                <td style="border:1px solid #ddd;padding:8px;">${s.status || 'ACTIVE'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div style="margin-top:30px;text-align:center;color:#888;">
+                    <hr><p>System Generated Document</p>
+                </div>
+            `;
+            
+            const options = {
+                margin: [10, 10, 10, 10],
+                filename: `students_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(options).from(pdfContent).save();
+            showMessage(`PDF exported with ${studentsToExport.length} students!`, 'success');
+        }
+
+        async function loadStudents() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to fetch');
+                allStudents = await response.json();
+                sortTable('id');
+                updateStatusCounts(allStudents);
+            } catch (error) {
+                document.getElementById('studentTableBody').innerHTML = 
+                    `<tr><td colspan="8" style="text-align: center; color: red;">Error loading students. Make sure backend is running. Sedan`;
+            }
+        }
+
+        function searchStudents() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            if (term === '') {
+                sortTable(sortColumn);
+                updateStatusCounts(allStudents);
+                return;
+            }
+            const filtered = allStudents.filter(s => 
+                s.name.toLowerCase().includes(term) ||
+                s.email.toLowerCase().includes(term) ||
+                (s.course && s.course.toLowerCase().includes(term)) ||
+                (s.phone && s.phone.includes(term))
+            );
+            
+            const sortedFiltered = [...filtered].sort((a, b) => {
+                let valA = a[sortColumn];
+                let valB = b[sortColumn];
+                if (sortColumn === 'age' || sortColumn === 'id') {
+                    return sortOrder === 'asc' ? valA - valB : valB - valA;
+                } else if (sortColumn === 'status') {
+                    const order = { 'ACTIVE': 1, 'GRADUATED': 2, 'INACTIVE': 3 };
+                    valA = order[valA] || 999;
+                    valB = order[valB] || 999;
+                    return sortOrder === 'asc' ? valA - valB : valB - valA;
+                } else {
+                    valA = (valA || '').toLowerCase();
+                    valB = (valB || '').toLowerCase();
+                    if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                    if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                    return 0;
+                }
+            });
+            displayStudents(sortedFiltered);
+            updateTotalCount(sortedFiltered.length);
+            updateStatusCounts(sortedFiltered);
+        }
+
+        function displayStudents(students) {
+            const tbody = document.getElementById('studentTableBody');
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No students found. Sedan';
+                return;
+            }
+            tbody.innerHTML = students.map(s => `
+                <tr>
+                    <td>${s.id}</td>
+                    <td class="clickable-name" onclick="showProfile(${JSON.stringify(s).replace(/"/g, '&quot;')})">${escapeHtml(s.name)}</td>
+                    <td>${escapeHtml(s.email)}</td>
+                    <td>${s.phone ? escapeHtml(s.phone) : '-'}</td>
+                    <td>${escapeHtml(s.course)}</td>
+                    <td>${s.age}</td>
+                    <td>${getStatusBadge(s.status)}</td>
+                    <td>
+                        <button class="edit-btn" onclick="editStudent(${s.id})">✏️ Edit</button>
+                        <button class="delete-btn" onclick="deleteStudent(${s.id})">🗑️ Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateTotalCount(count) {
+            document.getElementById('totalCount').textContent = `📊 Total Students: ${count}`;
+        }
+
+        function downloadCSV() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            let students = [...allStudents];
+            if (term !== '') {
+                students = students.filter(s => 
+                    s.name.toLowerCase().includes(term) ||
+                    s.email.toLowerCase().includes(term) ||
+                    (s.course && s.course.toLowerCase().includes(term))
+                );
+            }
+            
+            if (students.length === 0) {
+                showMessage('No students to export!', 'error');
+                return;
+            }
+            
+            let csv = "ID,Name,Email,Phone,Course,Age,Status\n";
+            students.forEach(s => {
+                csv += `"${s.id}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `students_${new Date().toISOString().slice(0,19)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showMessage(`Downloaded ${students.length} students!`, 'success');
+        }
+
+        function escapeCsv(text) {
+            if (!text) return '';
+            return text.replace(/"/g, '""');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function saveStudent() {
+            const student = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                course: document.getElementById('course').value.trim(),
+                age: parseInt(document.getElementById('age').value),
+                status: document.getElementById('status').value
+            };
+
+            if (!student.name || !student.email || !student.course || !student.age) {
+                showMessage('Please fill all required fields!', 'error');
+                return;
+            }
+            if (student.age < 18 || student.age > 100) {
+                showMessage('Age must be between 18 and 100!', 'error');
+                return;
+            }
+            if (student.phone && !/^\d{10}$/.test(student.phone)) {
+                showMessage('Phone number must be 10 digits!', 'error');
+                return;
+            }
+
+            try {
+                if (currentEditId) {
+                    await fetch(`${API_URL}/${currentEditId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(student)
+                    });
+                    showMessage('Student updated!', 'success');
+                    cancelEdit();
+                } else {
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(student)
+                    });
+                    showMessage('Student added!', 'success');
+                    clearForm();
+                }
+                await loadStudents();
+            } catch (error) {
+                showMessage(error.message, 'error');
+            }
+        }
+
+        async function editStudent(id) {
+            closeModal();
+            const response = await fetch(`${API_URL}/${id}`);
+            const s = await response.json();
+            document.getElementById('name').value = s.name;
+            document.getElementById('email').value = s.email;
+            document.getElementById('phone').value = s.phone || '';
+            document.getElementById('course').value = s.course;
+            document.getElementById('age').value = s.age;
+            document.getElementById('status').value = s.status || 'ACTIVE';
+            currentEditId = id;
+            document.getElementById('formTitle').textContent = '✏️ Edit Student';
+            document.getElementById('saveBtn').textContent = 'Update';
+            document.getElementById('cancelBtn').style.display = 'inline-block';
+            document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function deleteStudent(id) {
+            if (confirm('Delete this student?')) {
+                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                showMessage('Student deleted!', 'success');
+                await loadStudents();
+            }
+        }
+
+        function cancelEdit() {
+            clearForm();
+            currentEditId = null;
+            document.getElementById('formTitle').textContent = '➕ Add New Student';
+            document.getElementById('saveBtn').textContent = 'Add Student';
+            document.getElementById('cancelBtn').style.display = 'none';
+        }
+
+        function clearForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('course').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('status').value = 'ACTIVE';
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+            const btn = document.querySelector('.btn-dark');
+            btn.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+            localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('profileModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Set modal edit button
+        document.getElementById('modalEditBtn').onclick = editFromModal;
+
+        if (localStorage.getItem('darkMode') === 'true') {
+            toggleDarkMode();
+        }
+
+        loadStudents();
+    </script>
+</body>
+</html>
