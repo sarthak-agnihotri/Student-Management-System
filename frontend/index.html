@@ -98,6 +98,17 @@
             color: #a0aec0;
         }
 
+        body.dark .pagination .page-btn {
+            background: #2d3748;
+            color: #f0f2f5;
+            border-color: #4a5568;
+        }
+
+        body.dark .pagination .page-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
         .container {
             max-width: 1600px;
             margin: 0 auto;
@@ -257,6 +268,70 @@
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 8px 14px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            margin: 0 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        body.dark .page-info {
+            color: #a0aec0;
+        }
+
+        .page-size-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        body.dark .page-size-select {
+            background: #2d3748;
+            color: #f0f2f5;
+            border-color: #4a5568;
         }
 
         /* Cards */
@@ -703,6 +778,8 @@
             .profile-detail { flex-direction: column; align-items: flex-start; }
             .detail-label { width: 100%; margin-bottom: 5px; }
             .modal-content { width: 95%; margin: 5% auto; }
+            .pagination { gap: 5px; }
+            .page-btn { padding: 5px 10px; font-size: 12px; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -801,6 +878,22 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <button class="page-btn" onclick="changePage('first')" id="firstBtn">⏮ First</button>
+                <button class="page-btn" onclick="changePage('prev')" id="prevBtn">◀ Prev</button>
+                <span id="pageNumbers"></span>
+                <button class="page-btn" onclick="changePage('next')" id="nextBtn">Next ▶</button>
+                <button class="page-btn" onclick="changePage('last')" id="lastBtn">Last ⏭</button>
+                <select id="pageSizeSelect" class="page-size-select" onchange="changePageSize()">
+                    <option value="5">5 per page</option>
+                    <option value="10" selected>10 per page</option>
+                    <option value="20">20 per page</option>
+                    <option value="50">50 per page</option>
+                </select>
+                <span class="page-info" id="pageInfo"></span>
+            </div>
         </div>
     </div>
 
@@ -826,6 +919,11 @@
         let currentModalStudent = null;
         let sortColumn = 'id';
         let sortOrder = 'asc';
+        
+        // Pagination variables
+        let currentPage = 1;
+        let pageSize = 10;
+        let filteredStudents = [];
 
         function showMessage(text, type) {
             const msgDiv = document.getElementById('message');
@@ -887,20 +985,111 @@
             }
         }
 
+        // Apply pagination and display
+        function applyPagination() {
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            const paginatedStudents = filteredStudents.slice(start, end);
+            displayStudents(paginatedStudents);
+            updatePaginationControls();
+        }
+
+        // Update pagination buttons and info
+        function updatePaginationControls() {
+            const totalPages = Math.ceil(filteredStudents.length / pageSize);
+            document.getElementById('totalCount').textContent = `📊 Total Students: ${filteredStudents.length}`;
+            
+            // Update page info
+            const start = (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, filteredStudents.length);
+            document.getElementById('pageInfo').textContent = `Showing ${start}-${end} of ${filteredStudents.length}`;
+            
+            // Update button states
+            document.getElementById('firstBtn').disabled = currentPage === 1;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
+            document.getElementById('lastBtn').disabled = currentPage === totalPages || totalPages === 0;
+            
+            // Generate page number buttons
+            const pageNumbersDiv = document.getElementById('pageNumbers');
+            pageNumbersDiv.innerHTML = '';
+            
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+            
+            if (startPage > 1) {
+                const firstBtn = document.createElement('button');
+                firstBtn.className = 'page-btn';
+                firstBtn.textContent = '1';
+                firstBtn.onclick = () => goToPage(1);
+                pageNumbersDiv.appendChild(firstBtn);
+                if (startPage > 2) {
+                    const dots = document.createElement('span');
+                    dots.textContent = '...';
+                    dots.style.margin = '0 5px';
+                    pageNumbersDiv.appendChild(dots);
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.textContent = i;
+                btn.onclick = () => goToPage(i);
+                pageNumbersDiv.appendChild(btn);
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const dots = document.createElement('span');
+                    dots.textContent = '...';
+                    dots.style.margin = '0 5px';
+                    pageNumbersDiv.appendChild(dots);
+                }
+                const lastBtn = document.createElement('button');
+                lastBtn.className = 'page-btn';
+                lastBtn.textContent = totalPages;
+                lastBtn.onclick = () => goToPage(totalPages);
+                pageNumbersDiv.appendChild(lastBtn);
+            }
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            applyPagination();
+        }
+
+        function changePage(action) {
+            const totalPages = Math.ceil(filteredStudents.length / pageSize);
+            switch(action) {
+                case 'first': currentPage = 1; break;
+                case 'prev': currentPage = Math.max(1, currentPage - 1); break;
+                case 'next': currentPage = Math.min(totalPages, currentPage + 1); break;
+                case 'last': currentPage = totalPages; break;
+            }
+            applyPagination();
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSizeSelect').value);
+            currentPage = 1;
+            applyPagination();
+        }
+
         function sortTable(column) {
             if (sortColumn === column) sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
             else { sortColumn = column; sortOrder = 'asc'; }
             updateSortIcons();
 
             const term = document.getElementById('searchInput').value.toLowerCase();
-            let data = term === '' ? [...allStudents] : allStudents.filter(s => 
+            filteredStudents = term === '' ? [...allStudents] : allStudents.filter(s => 
                 s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || 
                 (s.rollNumber && s.rollNumber.includes(term)) || (s.course && s.course.toLowerCase().includes(term)) ||
                 (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term)) ||
                 (s.fatherName && s.fatherName.toLowerCase().includes(term)) || (s.motherName && s.motherName.toLowerCase().includes(term))
             );
 
-            const sorted = data.sort((a, b) => {
+            filteredStudents.sort((a, b) => {
                 let valA = a[column], valB = b[column];
                 if (column === 'age' || column === 'id') return sortOrder === 'asc' ? valA - valB : valB - valA;
                 if (column === 'status') {
@@ -912,9 +1101,10 @@
                 if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
                 return 0;
             });
-            displayStudents(sorted);
-            document.getElementById('totalCount').textContent = `📊 Total Students: ${sorted.length}`;
-            updateStatusCounts(sorted);
+            
+            currentPage = 1;
+            applyPagination();
+            updateStatusCounts(filteredStudents);
         }
 
         function updateSortIcons() {
@@ -930,16 +1120,14 @@
 
         function searchStudents() {
             const term = document.getElementById('searchInput').value.toLowerCase();
-            let filtered = [...allStudents];
-            if (term !== '') {
-                filtered = allStudents.filter(s => 
-                    s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || 
-                    (s.rollNumber && s.rollNumber.includes(term)) || (s.course && s.course.toLowerCase().includes(term)) ||
-                    (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term)) ||
-                    (s.fatherName && s.fatherName.toLowerCase().includes(term)) || (s.motherName && s.motherName.toLowerCase().includes(term))
-                );
-            }
-            const sorted = [...filtered].sort((a, b) => {
+            filteredStudents = term === '' ? [...allStudents] : allStudents.filter(s => 
+                s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || 
+                (s.rollNumber && s.rollNumber.includes(term)) || (s.course && s.course.toLowerCase().includes(term)) ||
+                (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term)) ||
+                (s.fatherName && s.fatherName.toLowerCase().includes(term)) || (s.motherName && s.motherName.toLowerCase().includes(term))
+            );
+
+            filteredStudents.sort((a, b) => {
                 let valA = a[sortColumn], valB = b[sortColumn];
                 if (sortColumn === 'age' || sortColumn === 'id') return sortOrder === 'asc' ? valA - valB : valB - valA;
                 if (sortColumn === 'status') {
@@ -951,9 +1139,10 @@
                 if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
                 return 0;
             });
-            displayStudents(sorted);
-            document.getElementById('totalCount').textContent = `📊 Total Students: ${sorted.length}`;
-            updateStatusCounts(sorted);
+            
+            currentPage = 1;
+            applyPagination();
+            updateStatusCounts(filteredStudents);
         }
 
         function displayStudents(students) {
@@ -979,31 +1168,23 @@
         }
 
         function exportToPDF() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            let students = term === '' ? [...allStudents] : allStudents.filter(s => 
-                s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || (s.course && s.course.toLowerCase().includes(term))
-            );
-            if (students.length === 0) { showMessage('No students to export!', 'error'); return; }
-
+            if (filteredStudents.length === 0) { showMessage('No students to export!', 'error'); return; }
             const pdfContent = document.createElement('div');
             pdfContent.innerHTML = `
                 <div style="text-align:center; margin-bottom:30px;"><h1 style="color:#667eea;">🎓 Student Management System</h1><p>Generated on: ${new Date().toLocaleString()}</p><hr></div>
-                <h2>Student List</h2><p>Total Students: ${students.length}</p>
+                <h2>Student List</h2><p>Total Students: ${filteredStudents.length}</p>
                 <table style="width:100%; border-collapse:collapse;">
                     <thead><tr><th>ID</th><th>Roll No</th><th>Name</th><th>Email</th><th>Class</th><th>Course</th><th>Age</th><th>Status</th></tr></thead>
-                    <tbody>${students.map(s => `<tr><td>${s.id}</td><td>${s.rollNumber || '-'}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.email)}</td><td>${s.studentClass || '-'}</td><td>${escapeHtml(s.course)}</td><td>${s.age}</td><td>${s.status || 'ACTIVE'}</td></tr>`).join('')}</tbody>
+                    <tbody>${filteredStudents.map(s => `<tr><td>${s.id}</td><td>${s.rollNumber || '-'}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.email)}</td><td>${s.studentClass || '-'}</td><td>${escapeHtml(s.course)}</td><td>${s.age}</td><td>${s.status || 'ACTIVE'}</td></tr>`).join('')}</tbody>
                 </table>
                 <div style="margin-top:30px;text-align:center;"><hr><p>System Generated Document</p></div>
             `;
             html2pdf().set({ margin: [10,10,10,10], filename: `students_${new Date().toISOString().slice(0,19)}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(pdfContent).save();
-            showMessage(`PDF exported with ${students.length} students!`, 'success');
+            showMessage(`PDF exported with ${filteredStudents.length} students!`, 'success');
         }
 
         function batchPrintIDCards() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            let students = term === '' ? [...allStudents] : allStudents.filter(s => s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term));
-            if (students.length === 0) { showMessage('No students to print ID cards!', 'error'); return; }
-
+            if (filteredStudents.length === 0) { showMessage('No students to print ID cards!', 'error'); return; }
             const printWindow = window.open('', '_blank');
             printWindow.document.write(`
                 <html><head><title>Student ID Cards</title><style>
@@ -1018,7 +1199,7 @@
                     .id-card-footer{background:#f8f9fa;padding:10px;text-align:center;font-size:10px;}
                     @media print{.id-card{box-shadow:none;border:1px solid #ddd;margin:10px;}}
                 </style></head>
-                <body><div style="display:flex;flex-wrap:wrap;justify-content:center;">${students.map(s => `
+                <body><div style="display:flex;flex-wrap:wrap;justify-content:center;">${filteredStudents.map(s => `
                     <div class="id-card"><div class="id-card-header"><h3>🎓 STUDENT ID CARD</h3><p>Valid for Academic Year 2026</p></div>
                     <div class="id-card-body"><div class="id-card-avatar">${getInitials(s.name)}</div>
                     <div class="id-card-details"><div class="detail"><strong>Roll No:</strong> ${s.rollNumber || 'N/A'}</div>
@@ -1030,7 +1211,7 @@
                 `).join('')}</div><script>window.onload=()=>setTimeout(()=>window.print(),500);<\/script></body></html>
             `);
             printWindow.document.close();
-            showMessage(`Printing ${students.length} ID cards...`, 'success');
+            showMessage(`Printing ${filteredStudents.length} ID cards...`, 'success');
         }
 
         async function loadStudents() {
@@ -1038,25 +1219,27 @@
                 const res = await fetch(API_URL);
                 if (!res.ok) throw new Error();
                 allStudents = await res.json();
-                sortTable('id');
+                filteredStudents = [...allStudents];
+                filteredStudents.sort((a, b) => a.id - b.id);
+                currentPage = 1;
+                applyPagination();
+                updateStatusCounts(allStudents);
             } catch (error) {
                 document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="13" style="color:red;">Error loading students. Is backend running?Sedan';
             }
         }
 
         function downloadCSV() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            let students = term === '' ? [...allStudents] : allStudents.filter(s => s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || (s.course && s.course.toLowerCase().includes(term)));
-            if (students.length === 0) { showMessage('No students to export!', 'error'); return; }
+            if (filteredStudents.length === 0) { showMessage('No students to export!', 'error'); return; }
             let csv = "ID,Roll Number,Name,Email,Student Phone,Father Name,Mother Name,Parent Phone,Class,Course,Age,Status\n";
-            students.forEach(s => csv += `"${s.id}","${s.rollNumber || ''}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${s.fatherName || ''}","${s.motherName || ''}","${s.parentPhone || ''}","${s.studentClass || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}"\n`);
+            filteredStudents.forEach(s => csv += `"${s.id}","${s.rollNumber || ''}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${s.fatherName || ''}","${s.motherName || ''}","${s.parentPhone || ''}","${s.studentClass || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}"\n`);
             const blob = new Blob([csv], { type: 'text/csv' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = `students_${new Date().toISOString().slice(0,19)}.csv`;
             a.click();
             URL.revokeObjectURL(a.href);
-            showMessage(`Downloaded ${students.length} students!`, 'success');
+            showMessage(`Downloaded ${filteredStudents.length} students!`, 'success');
         }
 
         async function saveStudent() {
