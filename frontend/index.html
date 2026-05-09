@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Management System</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,102 +15,70 @@
             transition: all 0.3s;
         }
 
-        /* Dark Mode */
         body.dark {
             background: #1a1a2e;
             color: #f0f2f5;
         }
 
-        body.dark .card {
-            background: #2d3748;
+        body.dark .card { background: #2d3748; }
+        body.dark .status-card { background: #2d3748; }
+        body.dark th { background: #1a202c; color: #f0f2f5; }
+        body.dark td { border-bottom-color: #4a5568; }
+        body.dark tr:hover { background: #374151; }
+        body.dark .search-box { background: #2d3748; border-color: #4a5568; color: white; }
+        body.dark input, body.dark select { background: #2d3748; border-color: #4a5568; color: white; }
+        body.dark .modal-content { background: #2d3748; color: #f0f2f5; }
+        body.dark .modal-footer { background: #1a202c; }
+        body.dark .detail-value { color: #f0f2f5; }
+        body.dark .profile-detail { border-bottom-color: #4a5568; }
+        body.dark .close { color: #f0f2f5; }
+        body.dark .pagination .page-btn { background: #2d3748; color: #f0f2f5; border-color: #4a5568; }
+        body.dark .pagination .page-btn.active { background: #667eea; }
+        body.dark .report-card { background: #2d3748; }
+        body.dark .report-card table td { border-bottom-color: #4a5568; }
+        body.dark .student-info { background: #1a202c; }
+
+        .container { max-width: 1600px; margin: 0 auto; }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
         }
 
-        body.dark .status-card {
-            background: #2d3748;
+        .nav-tab {
+            padding: 10px 25px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #333;
         }
 
-        body.dark th {
-            background: #1a202c;
+        body.dark .nav-tab {
+            background: #4a5568;
             color: #f0f2f5;
         }
 
-        body.dark td {
-            border-bottom-color: #4a5568;
-        }
-
-        body.dark tr:hover {
-            background: #374151;
-        }
-
-        body.dark .search-box {
-            background: #2d3748;
-            border-color: #4a5568;
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
 
-        body.dark input, body.dark select {
-            background: #2d3748;
-            border-color: #4a5568;
-            color: white;
+        .tab-content {
+            display: none;
         }
 
-        body.dark .status-active {
-            background: #22543d;
-            color: #9ae6b4;
+        .tab-content.active {
+            display: block;
         }
 
-        body.dark .status-inactive {
-            background: #742a2a;
-            color: #fed7d7;
-        }
-
-        body.dark .status-graduated {
-            background: #744210;
-            color: #feebc8;
-        }
-
-        body.dark .modal-content {
-            background: #2d3748;
-            color: #f0f2f5;
-        }
-
-        body.dark .modal-footer {
-            background: #1a202c;
-        }
-
-        body.dark .detail-value {
-            color: #f0f2f5;
-        }
-
-        body.dark .profile-detail {
-            border-bottom-color: #4a5568;
-        }
-
-        body.dark .close {
-            color: #f0f2f5;
-        }
-
-        body.dark .status-label {
-            color: #a0aec0;
-        }
-
-        body.dark .pagination .page-btn {
-            background: #2d3748;
-            color: #f0f2f5;
-            border-color: #4a5568;
-        }
-
-        body.dark .pagination .page-btn.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
@@ -124,22 +88,10 @@
             gap: 15px;
         }
 
-        h1 {
-            font-size: 2rem;
-            color: #1a1a2e;
-        }
+        h1 { font-size: 2rem; color: #1a1a2e; }
+        body.dark h1 { color: #f0f2f5; }
+        h1 span { background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        body.dark h1 {
-            color: #f0f2f5;
-        }
-
-        h1 span {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Status Summary Cards */
         .status-summary {
             display: flex;
             gap: 15px;
@@ -160,35 +112,15 @@
             min-width: 120px;
         }
 
-        .status-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .status-icon {
-            font-size: 28px;
-        }
-
-        .status-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .status-label {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .status-count {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
+        .status-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .status-icon { font-size: 28px; }
+        .status-info { display: flex; flex-direction: column; }
+        .status-label { font-size: 12px; color: #666; }
+        .status-count { font-size: 24px; font-weight: bold; }
         .status-card.active .status-count { color: #48bb78; }
         .status-card.inactive .status-count { color: #f56565; }
         .status-card.graduated .status-count { color: #ed8936; }
 
-        /* Stats Bar */
         .stats-bar {
             display: flex;
             justify-content: space-between;
@@ -205,31 +137,20 @@
             border-radius: 30px;
             font-weight: bold;
             font-size: 1.1rem;
-            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
         }
 
         .search-box {
             padding: 12px 20px;
-            width: 350px;
+            width: 300px;
             border: 2px solid #e0e0e0;
             border-radius: 30px;
             font-size: 14px;
-            transition: all 0.3s;
             background: white;
         }
 
-        .search-box:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+        .search-box:focus { outline: none; border-color: #667eea; }
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn {
             padding: 10px 20px;
             border-radius: 30px;
@@ -239,146 +160,34 @@
             border: none;
             font-size: 14px;
         }
+        .btn-csv { background: #48bb78; color: white; }
+        .btn-pdf { background: #e53e3e; color: white; }
+        .btn-print { background: #ed8936; color: white; }
+        .btn-dark { background: #2d3748; color: white; }
+        .btn-idcard { background: #805ad5; color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
-        .btn-csv {
-            background: #48bb78;
-            color: white;
-        }
-
-        .btn-pdf {
-            background: #e53e3e;
-            color: white;
-        }
-
-        .btn-print {
-            background: #ed8936;
-            color: white;
-        }
-
-        .btn-dark {
-            background: #2d3748;
-            color: white;
-        }
-
-        .btn-idcard {
-            background: #805ad5;
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        /* Pagination Styles */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .page-btn {
-            padding: 8px 14px;
-            border: 1px solid #ddd;
-            background: white;
-            color: #333;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-
-        .page-btn:hover:not(:disabled) {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-            transform: translateY(-1px);
-        }
-
-        .page-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .page-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .page-info {
-            margin: 0 10px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        body.dark .page-info {
-            color: #a0aec0;
-        }
-
-        .page-size-select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        body.dark .page-size-select {
-            background: #2d3748;
-            color: #f0f2f5;
-            border-color: #4a5568;
-        }
-
-        /* Cards */
         .card {
             background: white;
             border-radius: 16px;
             padding: 25px;
             margin-bottom: 25px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            transition: all 0.3s;
         }
 
-        .card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+        .card h2 { color: #1a1a2e; margin-bottom: 20px; font-size: 1.3rem; }
+        body.dark .card h2 { color: #f0f2f5; }
 
-        .card h2 {
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-        }
-
-        body.dark .card h2 {
-            color: #f0f2f5;
-        }
-
-        /* Form */
-        .form-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
+        .form-group { display: flex; gap: 12px; flex-wrap: wrap; }
         input, select {
             flex: 1;
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             font-size: 14px;
-            transition: all 0.3s;
             background: white;
         }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+        input:focus, select:focus { outline: none; border-color: #667eea; }
 
         button {
             padding: 12px 28px;
@@ -388,132 +197,23 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s;
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #e0e0e0; font-size: 13px; }
+        th { background: #f8f9fa; font-weight: 600; cursor: pointer; }
+        th:hover { background: #e2e8f0; }
 
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+        .status-active { background: #c6f6d5; color: #22543d; }
+        .status-inactive { background: #fed7d7; color: #742a2a; }
+        .status-graduated { background: #feebc8; color: #744210; }
 
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 13px;
-        }
+        .edit-btn { background: #4299e1; padding: 6px 12px; border-radius: 8px; font-size: 12px; margin-right: 5px; }
+        .delete-btn { background: #f56565; padding: 6px 12px; border-radius: 8px; font-size: 12px; }
+        .mark-btn { background: #48bb78; padding: 6px 12px; border-radius: 8px; font-size: 12px; }
 
-        th {
-            background: #f8f9fa;
-            color: #1a1a2e;
-            font-weight: 600;
-            cursor: pointer;
-            user-select: none;
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        th:hover {
-            background: #e2e8f0;
-        }
-
-        body.dark th:hover {
-            background: #2d3748;
-        }
-
-        .sort-icon {
-            margin-left: 8px;
-            font-size: 12px;
-            opacity: 0.5;
-            display: inline-block;
-        }
-
-        th.active-sort {
-            background: #e2e8f0;
-        }
-
-        body.dark th.active-sort {
-            background: #374151;
-        }
-
-        th.active-sort .sort-icon {
-            opacity: 1;
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        /* Clickable Name */
-        .clickable-name {
-            cursor: pointer;
-            color: #667eea;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .clickable-name:hover {
-            color: #764ba2;
-            text-decoration: underline;
-        }
-
-        body.dark .clickable-name {
-            color: #9ae6b4;
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        /* Status Badges */
-        .status-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .status-active {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-
-        .status-inactive {
-            background: #fed7d7;
-            color: #742a2a;
-        }
-
-        .status-graduated {
-            background: #feebc8;
-            color: #744210;
-        }
-
-        /* Action Buttons */
-        .edit-btn {
-            background: #4299e1;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            margin-right: 5px;
-        }
-
-        .delete-btn {
-            background: #f56565;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-        }
-
-        .edit-btn:hover, .delete-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        /* Modal Styles */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -523,38 +223,16 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         .modal-content {
             background: white;
             margin: 2% auto;
-            padding: 0;
             width: 90%;
             max-width: 500px;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideIn 0.3s;
             max-height: 90vh;
             overflow-y: auto;
         }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
         .modal-header {
             background: linear-gradient(135deg, #667eea, #764ba2);
             padding: 15px 20px;
@@ -562,224 +240,46 @@
             color: white;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
         }
+        .modal-body { padding: 20px 25px; }
+        .close { font-size: 28px; cursor: pointer; }
 
-        .modal-header h2 {
-            margin: 0;
-            font-size: 1.3rem;
-        }
+        /* Pagination */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+        .page-btn { padding: 8px 14px; border: 1px solid #ddd; background: white; border-radius: 8px; cursor: pointer; }
+        .page-btn.active { background: #667eea; color: white; border-color: #667eea; }
+        .page-size-select { padding: 8px 12px; border-radius: 8px; margin-left: 10px; }
 
-        .close {
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            line-height: 1;
-        }
-
-        .close:hover {
-            transform: scale(1.2);
-        }
-
-        .modal-body {
-            padding: 20px 25px;
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-
-        .profile-avatar {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .avatar-circle {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .profile-detail {
-            margin-bottom: 10px;
-            padding: 8px 10px;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            width: 100px;
-            color: #667eea;
-            font-size: 14px;
-        }
-
-        .detail-value {
-            flex: 1;
-            color: #333;
-            font-size: 14px;
-        }
-
-        .modal-footer {
-            padding: 12px 20px;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            background: #f8f9fa;
-            border-radius: 0 0 20px 20px;
-            position: sticky;
-            bottom: 0;
-        }
-
-        .modal-btn {
-            padding: 8px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            border: none;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .modal-btn:first-child {
-            background: #a0aec0;
-            color: white;
-        }
-
-        .modal-btn:last-child {
-            background: #4299e1;
-            color: white;
-        }
-
-        .modal-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        /* Message */
-        .message {
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            display: none;
-        }
-
-        .success {
-            background: #c6f6d5;
-            color: #22543d;
-            border-left: 4px solid #48bb78;
-        }
-
-        .error {
-            background: #fed7d7;
-            color: #742a2a;
-            border-left: 4px solid #f56565;
-        }
-
-        /* ID Card Styles */
-        .id-card-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .id-card {
-            width: 350px;
+        /* Report Card */
+        .report-card {
+            max-width: 800px;
+            margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            overflow: hidden;
-            page-break-inside: avoid;
-            break-inside: avoid;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
+        .report-header { text-align: center; margin-bottom: 20px; }
+        .report-header h2 { color: #667eea; margin-bottom: 5px; }
+        .student-info { margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 12px; display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+        .marks-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .marks-table th, .marks-table td { padding: 10px; text-align: center; border: 1px solid #ddd; }
+        .marks-table th { background: #667eea; color: white; }
+        .result-summary { margin-top: 20px; padding: 15px; border-radius: 12px; text-align: center; font-size: 18px; font-weight: bold; }
+        .grade-Aplus, .grade-A { background: #c6f6d5; color: #22543d; }
+        .grade-Bplus, .grade-B { background: #feebc8; color: #744210; }
+        .grade-Cplus, .grade-C { background: #fed7d7; color: #742a2a; }
+        .grade-F { background: #fed7d7; color: #742a2a; }
+        .print-btn { background: #4299e1; margin-top: 20px; }
 
-        .id-card-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .id-card-header h3 {
-            margin: 0;
-            font-size: 18px;
-        }
-
-        .id-card-body {
-            padding: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .id-card-avatar {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .id-card-details {
-            flex: 1;
-        }
-
-        .id-card-details .detail {
-            margin-bottom: 5px;
-            font-size: 11px;
-        }
-
-        .id-card-footer {
-            background: #f8f9fa;
-            padding: 10px;
-            text-align: center;
-            font-size: 10px;
-            color: #666;
-        }
-
-        body.dark .id-card {
-            background: #2d3748;
-        }
-
-        body.dark .id-card-footer {
-            background: #1a202c;
-        }
-
-        @media print {
-            .no-print { display: none; }
-            .id-card { box-shadow: none; border: 1px solid #ddd; margin: 10px; }
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
             .form-group { flex-direction: column; }
             .stats-bar { flex-direction: column; align-items: stretch; }
             .status-summary { flex-direction: column; }
             .search-box { width: 100%; }
-            .btn-group { justify-content: center; }
             table { font-size: 10px; }
             th, td { padding: 5px; }
-            .profile-detail { flex-direction: column; align-items: flex-start; }
-            .detail-label { width: 100%; margin-bottom: 5px; }
-            .modal-content { width: 95%; margin: 5% auto; }
-            .pagination { gap: 5px; }
-            .page-btn { padding: 5px 10px; font-size: 12px; }
+            .student-info { grid-template-columns: 1fr; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -791,456 +291,246 @@
             <button class="btn btn-dark" onclick="toggleDarkMode()">🌙 Dark Mode</button>
         </div>
 
-        <div id="message" class="message"></div>
+        <div id="message" style="display:none; padding:12px; margin-bottom:20px; border-radius:12px;"></div>
 
-        <!-- Status Summary Cards -->
-        <div class="status-summary">
-            <div class="status-card active">
-                <div class="status-icon">🟢</div>
-                <div class="status-info">
-                    <span class="status-label">Active Students</span>
-                    <span class="status-count" id="activeCount">0</span>
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('students')">📚 Students</button>
+            <button class="nav-tab" onclick="showTab('marks')">📝 Marks & Exams</button>
+            <button class="nav-tab" onclick="showTab('results')">📊 Results</button>
+        </div>
+
+        <!-- Students Tab -->
+        <div id="studentsTab" class="tab-content active">
+            <div class="status-summary">
+                <div class="status-card active"><div class="status-icon">🟢</div><div class="status-info"><span class="status-label">Active</span><span class="status-count" id="activeCount">0</span></div></div>
+                <div class="status-card inactive"><div class="status-icon">🔴</div><div class="status-info"><span class="status-label">Inactive</span><span class="status-count" id="inactiveCount">0</span></div></div>
+                <div class="status-card graduated"><div class="status-icon">🟠</div><div class="status-info"><span class="status-label">Graduated</span><span class="status-count" id="graduatedCount">0</span></div></div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="total-count" id="totalCount">📊 Total: 0</div>
+                <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by name, email, roll number..." onkeyup="searchStudents()">
+                <div class="btn-group">
+                    <button onclick="downloadCSV()" class="btn btn-csv">📥 CSV</button>
+                    <button onclick="exportToPDF()" class="btn btn-pdf">📄 PDF</button>
+                    <button onclick="batchPrintIDCards()" class="btn btn-idcard">🪪 ID Cards</button>
+                    <button onclick="window.print()" class="btn btn-print">🖨️ Print</button>
                 </div>
             </div>
-            <div class="status-card inactive">
-                <div class="status-icon">🔴</div>
-                <div class="status-info">
-                    <span class="status-label">Inactive Students</span>
-                    <span class="status-count" id="inactiveCount">0</span>
+
+            <div class="card">
+                <h2 id="formTitle">➕ Add New Student</h2>
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Full Name">
+                    <input type="email" id="email" placeholder="Email">
+                    <input type="tel" id="phone" placeholder="Student Phone">
+                    <input type="text" id="rollNumber" placeholder="Roll Number">
+                    <input type="text" id="studentClass" placeholder="Class">
+                    <input type="text" id="fatherName" placeholder="Father's Name">
+                    <input type="text" id="motherName" placeholder="Mother's Name">
+                    <input type="tel" id="parentPhone" placeholder="Parent Phone">
+                    <input type="text" id="course" placeholder="Course">
+                    <input type="number" id="age" placeholder="Age">
+                    <select id="status"><option value="ACTIVE">🟢 Active</option><option value="INACTIVE">🔴 Inactive</option><option value="GRADUATED">🟠 Graduated</option></select>
+                    <button onclick="saveStudent()" id="saveBtn">Add Student</button>
+                    <button onclick="cancelEdit()" id="cancelBtn" style="display:none;">Cancel</button>
                 </div>
             </div>
-            <div class="status-card graduated">
-                <div class="status-icon">🟠</div>
-                <div class="status-info">
-                    <span class="status-label">Graduated Students</span>
-                    <span class="status-count" id="graduatedCount">0</span>
+
+            <div class="card">
+                <h2>📋 Student List</h2>
+                <div style="overflow-x:auto;">
+                    <table id="studentTable">
+                        <thead><tr><th>ID</th><th>Roll No</th><th>Name</th><th>Email</th><th>Phone</th><th>Father</th><th>Mother</th><th>Parent Phone</th><th>Class</th><th>Course</th><th>Age</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="studentTableBody"><tr><td colspan="13">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </div>
+
+        <!-- Marks & Exams Tab -->
+        <div id="marksTab" class="tab-content">
+            <div class="card">
+                <h2>📅 Add Exam</h2>
+                <div class="form-group">
+                    <input type="text" id="examName" placeholder="Exam Name (e.g., Mid Term)">
+                    <input type="date" id="examDate">
+                    <input type="text" id="examSemester" placeholder="Semester">
+                    <input type="text" id="examYear" placeholder="Academic Year">
+                    <button onclick="addExam()">Add Exam</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📚 Add Marks</h2>
+                <div class="form-group">
+                    <select id="selectExam"><option value="">Select Exam</option></select>
+                    <select id="selectStudent"><option value="">Select Student</option></select>
+                    <input type="text" id="subject" placeholder="Subject">
+                    <input type="number" id="marksObtained" placeholder="Marks Obtained">
+                    <input type="number" id="totalMarks" placeholder="Total Marks">
+                    <button onclick="addMarks()">Add Marks</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📋 Marks List</h2>
+                <div style="overflow-x:auto;">
+                    <table id="marksTable">
+                        <thead><tr><th>Student</th><th>Exam</th><th>Subject</th><th>Marks</th><th>Grade</th><th>Actions</th></tr></thead>
+                        <tbody id="marksTableBody"><tr><td colspan="6">Loading...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <div class="stats-bar">
-            <div class="total-count" id="totalCount">📊 Total Students: 0</div>
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by name, roll number, class, course, father/mother name..." onkeyup="searchStudents()">
-            <div class="btn-group">
-                <button onclick="downloadCSV()" class="btn btn-csv">📥 Download CSV</button>
-                <button onclick="exportToPDF()" class="btn btn-pdf">📄 Export PDF</button>
-                <button onclick="batchPrintIDCards()" class="btn btn-idcard">🪪 ID Cards</button>
-                <button onclick="window.print()" class="btn btn-print">🖨️ Print</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2 id="formTitle">➕ Add New Student</h2>
-            <div class="form-group">
-                <input type="text" id="name" placeholder="Full Name" required>
-                <input type="email" id="email" placeholder="Email Address" required>
-                <input type="tel" id="phone" placeholder="Student Phone (10 digits)">
-                <input type="text" id="rollNumber" placeholder="Roll Number (e.g., 001)">
-                <input type="text" id="studentClass" placeholder="Class (e.g., 10th, 12th)">
-                <input type="text" id="fatherName" placeholder="Father's Name">
-                <input type="text" id="motherName" placeholder="Mother's Name">
-                <input type="tel" id="parentPhone" placeholder="Parent Phone (10 digits)">
-                <input type="text" id="course" placeholder="Course Name" required>
-                <input type="number" id="age" placeholder="Age" required>
-                <select id="status">
-                    <option value="ACTIVE">🟢 Active</option>
-                    <option value="INACTIVE">🔴 Inactive</option>
-                    <option value="GRADUATED">🟠 Graduated</option>
-                </select>
-                <button onclick="saveStudent()" id="saveBtn">Add Student</button>
-                <button onclick="cancelEdit()" id="cancelBtn" style="display:none;">Cancel</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>📋 Student List <span style="font-size: 12px; font-weight: normal;">(Click on student name to view profile)</span></h2>
-            <div style="overflow-x: auto;">
-                <table id="studentTable">
-                    <thead>
-                        <tr>
-                            <th onclick="sortTable('id')">ID <span class="sort-icon" id="sort-icon-id">↕️</span></th>
-                            <th onclick="sortTable('rollNumber')">Roll No <span class="sort-icon" id="sort-icon-rollNumber">↕️</span></th>
-                            <th onclick="sortTable('name')">Name <span class="sort-icon" id="sort-icon-name">↕️</span></th>
-                            <th onclick="sortTable('email')">Email <span class="sort-icon" id="sort-icon-email">↕️</span></th>
-                            <th onclick="sortTable('phone')">Student Phone <span class="sort-icon" id="sort-icon-phone">↕️</span></th>
-                            <th>Father</th>
-                            <th>Mother</th>
-                            <th>Parent Phone</th>
-                            <th onclick="sortTable('studentClass')">Class <span class="sort-icon" id="sort-icon-studentClass">↕️</span></th>
-                            <th onclick="sortTable('course')">Course <span class="sort-icon" id="sort-icon-course">↕️</span></th>
-                            <th onclick="sortTable('age')">Age <span class="sort-icon" id="sort-icon-age">↕️</span></th>
-                            <th onclick="sortTable('status')">Status <span class="sort-icon" id="sort-icon-status">↕️</span></th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="studentTableBody">
-                        <tr><td colspan="13" style="text-align: center;">Loading students...Sedan
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination -->
-            <div class="pagination" id="pagination">
-                <button class="page-btn" onclick="changePage('first')" id="firstBtn">⏮ First</button>
-                <button class="page-btn" onclick="changePage('prev')" id="prevBtn">◀ Prev</button>
-                <span id="pageNumbers"></span>
-                <button class="page-btn" onclick="changePage('next')" id="nextBtn">Next ▶</button>
-                <button class="page-btn" onclick="changePage('last')" id="lastBtn">Last ⏭</button>
-                <select id="pageSizeSelect" class="page-size-select" onchange="changePageSize()">
-                    <option value="5">5 per page</option>
-                    <option value="10" selected>10 per page</option>
-                    <option value="20">20 per page</option>
-                    <option value="50">50 per page</option>
-                </select>
-                <span class="page-info" id="pageInfo"></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Profile Modal -->
-    <div id="profileModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>👤 Student Profile</h2>
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <div class="modal-body" id="modalBody"></div>
-            <div class="modal-footer">
-                <button class="modal-btn" onclick="closeModal()">Close</button>
-                <button class="modal-btn" id="modalEditBtn">✏️ Edit Student</button>
+        <!-- Results Tab -->
+        <div id="resultsTab" class="tab-content">
+            <div class="card">
+                <h2>📊 Generate Report Card</h2>
+                <div class="form-group">
+                    <select id="resultExam" onchange="generateResult()"><option value="">Select Exam</option></select>
+                    <select id="resultStudent" onchange="generateResult()"><option value="">Select Student</option></select>
+                </div>
+                <div id="reportCardContainer" style="margin-top:20px;"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = 'http://localhost:8080/api/students';
-        let currentEditId = null;
+        // API URLs
+        const STUDENT_API = 'http://localhost:8080/api/students';
         let allStudents = [];
-        let currentModalStudent = null;
-        let sortColumn = 'id';
-        let sortOrder = 'asc';
-        
-        // Pagination variables
-        let currentPage = 1;
-        let pageSize = 10;
+        let allExams = [];
+        let allMarks = [];
+        let currentEditId = null;
         let filteredStudents = [];
+        let currentPage = 1, pageSize = 10;
 
-        function showMessage(text, type) {
+        function showMessage(msg, type) {
             const msgDiv = document.getElementById('message');
-            msgDiv.textContent = text;
-            msgDiv.className = `message ${type}`;
+            msgDiv.textContent = msg;
+            msgDiv.style.backgroundColor = type === 'success' ? '#c6f6d5' : '#fed7d7';
+            msgDiv.style.color = type === 'success' ? '#22543d' : '#742a2a';
             msgDiv.style.display = 'block';
-            setTimeout(() => {
-                msgDiv.style.display = 'none';
-            }, 3000);
+            setTimeout(() => msgDiv.style.display = 'none', 3000);
         }
 
-        function getStatusBadge(status) {
-            const classes = { 'ACTIVE': 'status-active', 'INACTIVE': 'status-inactive', 'GRADUATED': 'status-graduated' };
-            const icons = { 'ACTIVE': '🟢', 'INACTIVE': '🔴', 'GRADUATED': '🟠' };
-            return `<span class="status-badge ${classes[status] || 'status-active'}">${icons[status] || '🟢'} ${status || 'ACTIVE'}</span>`;
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tab + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+            if (tab === 'marks') loadMarksData();
+            if (tab === 'results') loadResultsData();
         }
 
-        function updateStatusCounts(students) {
-            document.getElementById('activeCount').textContent = students.filter(s => s.status === 'ACTIVE').length;
-            document.getElementById('inactiveCount').textContent = students.filter(s => s.status === 'INACTIVE').length;
-            document.getElementById('graduatedCount').textContent = students.filter(s => s.status === 'GRADUATED').length;
+        // ============ STUDENT FUNCTIONS ============
+        async function loadStudents() {
+            try {
+                const res = await fetch(STUDENT_API);
+                allStudents = await res.json();
+                filteredStudents = [...allStudents];
+                applyPagination();
+                updateStatusCounts();
+                populateStudentSelects();
+            } catch(e) { console.error(e); }
         }
 
-        function getInitials(name) {
-            if (!name) return '?';
-            return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        function updateStatusCounts() {
+            const active = allStudents.filter(s => s.status === 'ACTIVE').length;
+            const inactive = allStudents.filter(s => s.status === 'INACTIVE').length;
+            const graduated = allStudents.filter(s => s.status === 'GRADUATED').length;
+            document.getElementById('activeCount').textContent = active;
+            document.getElementById('inactiveCount').textContent = inactive;
+            document.getElementById('graduatedCount').textContent = graduated;
         }
 
-        function showProfile(student) {
-            currentModalStudent = student;
-            const statusIcon = { 'ACTIVE': '🟢', 'INACTIVE': '🔴', 'GRADUATED': '🟠' };
-            document.getElementById('modalBody').innerHTML = `
-                <div class="profile-avatar"><div class="avatar-circle">${getInitials(student.name)}</div></div>
-                <div class="profile-detail"><div class="detail-label">🎫 Roll No:</div><div class="detail-value">${student.rollNumber || 'Not assigned'}</div></div>
-                <div class="profile-detail"><div class="detail-label">📋 ID:</div><div class="detail-value">${student.id}</div></div>
-                <div class="profile-detail"><div class="detail-label">👤 Name:</div><div class="detail-value">${escapeHtml(student.name)}</div></div>
-                <div class="profile-detail"><div class="detail-label">📧 Email:</div><div class="detail-value">${escapeHtml(student.email)}</div></div>
-                <div class="profile-detail"><div class="detail-label">📞 Student Phone:</div><div class="detail-value">${student.phone || 'Not provided'}</div></div>
-                <div class="profile-detail"><div class="detail-label">👨 Father:</div><div class="detail-value">${student.fatherName || 'Not provided'}</div></div>
-                <div class="profile-detail"><div class="detail-label">👩 Mother:</div><div class="detail-value">${student.motherName || 'Not provided'}</div></div>
-                <div class="profile-detail"><div class="detail-label">📞 Parent Phone:</div><div class="detail-value">${student.parentPhone || 'Not provided'}</div></div>
-                <div class="profile-detail"><div class="detail-label">📖 Class:</div><div class="detail-value">${student.studentClass || 'Not assigned'}</div></div>
-                <div class="profile-detail"><div class="detail-label">📚 Course:</div><div class="detail-value">${escapeHtml(student.course)}</div></div>
-                <div class="profile-detail"><div class="detail-label">🎂 Age:</div><div class="detail-value">${student.age} years</div></div>
-                <div class="profile-detail"><div class="detail-label">📊 Status:</div><div class="detail-value">${statusIcon[student.status] || '🟢'} ${student.status || 'ACTIVE'}</div></div>
-            `;
-            document.getElementById('profileModal').style.display = 'block';
+        function populateStudentSelects() {
+            const studentSelect = document.getElementById('selectStudent');
+            const resultStudent = document.getElementById('resultStudent');
+            if (studentSelect) studentSelect.innerHTML = '<option value="">Select Student</option>' + allStudents.map(s => `<option value="${s.id}">${s.name} (${s.rollNumber || 'N/A'})</option>`).join('');
+            if (resultStudent) resultStudent.innerHTML = '<option value="">Select Student</option>' + allStudents.map(s => `<option value="${s.id}">${s.name} (${s.rollNumber || 'N/A'})</option>`).join('');
         }
 
-        function closeModal() {
-            document.getElementById('profileModal').style.display = 'none';
-            currentModalStudent = null;
-        }
-
-        function editFromModal() {
-            if (currentModalStudent) {
-                closeModal();
-                setTimeout(() => editStudent(currentModalStudent.id), 100);
-            }
-        }
-
-        // Apply pagination and display
         function applyPagination() {
             const start = (currentPage - 1) * pageSize;
-            const end = start + pageSize;
-            const paginatedStudents = filteredStudents.slice(start, end);
-            displayStudents(paginatedStudents);
-            updatePaginationControls();
-        }
-
-        // Update pagination buttons and info
-        function updatePaginationControls() {
-            const totalPages = Math.ceil(filteredStudents.length / pageSize);
-            document.getElementById('totalCount').textContent = `📊 Total Students: ${filteredStudents.length}`;
-            
-            // Update page info
-            const start = (currentPage - 1) * pageSize + 1;
-            const end = Math.min(currentPage * pageSize, filteredStudents.length);
-            document.getElementById('pageInfo').textContent = `Showing ${start}-${end} of ${filteredStudents.length}`;
-            
-            // Update button states
-            document.getElementById('firstBtn').disabled = currentPage === 1;
-            document.getElementById('prevBtn').disabled = currentPage === 1;
-            document.getElementById('nextBtn').disabled = currentPage === totalPages || totalPages === 0;
-            document.getElementById('lastBtn').disabled = currentPage === totalPages || totalPages === 0;
-            
-            // Generate page number buttons
-            const pageNumbersDiv = document.getElementById('pageNumbers');
-            pageNumbersDiv.innerHTML = '';
-            
-            let startPage = Math.max(1, currentPage - 2);
-            let endPage = Math.min(totalPages, currentPage + 2);
-            
-            if (startPage > 1) {
-                const firstBtn = document.createElement('button');
-                firstBtn.className = 'page-btn';
-                firstBtn.textContent = '1';
-                firstBtn.onclick = () => goToPage(1);
-                pageNumbersDiv.appendChild(firstBtn);
-                if (startPage > 2) {
-                    const dots = document.createElement('span');
-                    dots.textContent = '...';
-                    dots.style.margin = '0 5px';
-                    pageNumbersDiv.appendChild(dots);
-                }
-            }
-            
-            for (let i = startPage; i <= endPage; i++) {
-                const btn = document.createElement('button');
-                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-                btn.textContent = i;
-                btn.onclick = () => goToPage(i);
-                pageNumbersDiv.appendChild(btn);
-            }
-            
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) {
-                    const dots = document.createElement('span');
-                    dots.textContent = '...';
-                    dots.style.margin = '0 5px';
-                    pageNumbersDiv.appendChild(dots);
-                }
-                const lastBtn = document.createElement('button');
-                lastBtn.className = 'page-btn';
-                lastBtn.textContent = totalPages;
-                lastBtn.onclick = () => goToPage(totalPages);
-                pageNumbersDiv.appendChild(lastBtn);
-            }
-        }
-
-        function goToPage(page) {
-            currentPage = page;
-            applyPagination();
-        }
-
-        function changePage(action) {
-            const totalPages = Math.ceil(filteredStudents.length / pageSize);
-            switch(action) {
-                case 'first': currentPage = 1; break;
-                case 'prev': currentPage = Math.max(1, currentPage - 1); break;
-                case 'next': currentPage = Math.min(totalPages, currentPage + 1); break;
-                case 'last': currentPage = totalPages; break;
-            }
-            applyPagination();
-        }
-
-        function changePageSize() {
-            pageSize = parseInt(document.getElementById('pageSizeSelect').value);
-            currentPage = 1;
-            applyPagination();
-        }
-
-        function sortTable(column) {
-            if (sortColumn === column) sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-            else { sortColumn = column; sortOrder = 'asc'; }
-            updateSortIcons();
-
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            filteredStudents = term === '' ? [...allStudents] : allStudents.filter(s => 
-                s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || 
-                (s.rollNumber && s.rollNumber.includes(term)) || (s.course && s.course.toLowerCase().includes(term)) ||
-                (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term)) ||
-                (s.fatherName && s.fatherName.toLowerCase().includes(term)) || (s.motherName && s.motherName.toLowerCase().includes(term))
-            );
-
-            filteredStudents.sort((a, b) => {
-                let valA = a[column], valB = b[column];
-                if (column === 'age' || column === 'id') return sortOrder === 'asc' ? valA - valB : valB - valA;
-                if (column === 'status') {
-                    const order = { 'ACTIVE': 1, 'GRADUATED': 2, 'INACTIVE': 3 };
-                    return sortOrder === 'asc' ? (order[valA]||999) - (order[valB]||999) : (order[valB]||999) - (order[valA]||999);
-                }
-                valA = (valA || '').toLowerCase(); valB = (valB || '').toLowerCase();
-                if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
-                if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
-                return 0;
-            });
-            
-            currentPage = 1;
-            applyPagination();
-            updateStatusCounts(filteredStudents);
-        }
-
-        function updateSortIcons() {
-            const cols = ['id', 'rollNumber', 'name', 'email', 'phone', 'studentClass', 'course', 'age', 'status'];
-            cols.forEach(col => {
-                const icon = document.getElementById(`sort-icon-${col}`);
-                if (icon) {
-                    icon.textContent = sortColumn === col ? (sortOrder === 'asc' ? '↑' : '↓') : '↕️';
-                    icon.style.opacity = sortColumn === col ? '1' : '0.5';
-                }
-            });
-        }
-
-        function searchStudents() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            filteredStudents = term === '' ? [...allStudents] : allStudents.filter(s => 
-                s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || 
-                (s.rollNumber && s.rollNumber.includes(term)) || (s.course && s.course.toLowerCase().includes(term)) ||
-                (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term)) ||
-                (s.fatherName && s.fatherName.toLowerCase().includes(term)) || (s.motherName && s.motherName.toLowerCase().includes(term))
-            );
-
-            filteredStudents.sort((a, b) => {
-                let valA = a[sortColumn], valB = b[sortColumn];
-                if (sortColumn === 'age' || sortColumn === 'id') return sortOrder === 'asc' ? valA - valB : valB - valA;
-                if (sortColumn === 'status') {
-                    const order = { 'ACTIVE': 1, 'GRADUATED': 2, 'INACTIVE': 3 };
-                    return sortOrder === 'asc' ? (order[valA]||999) - (order[valB]||999) : (order[valB]||999) - (order[valA]||999);
-                }
-                valA = (valA || '').toLowerCase(); valB = (valB || '').toLowerCase();
-                if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
-                if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
-                return 0;
-            });
-            
-            currentPage = 1;
-            applyPagination();
-            updateStatusCounts(filteredStudents);
+            const paginated = filteredStudents.slice(start, start + pageSize);
+            displayStudents(paginated);
+            updatePaginationUI();
         }
 
         function displayStudents(students) {
             const tbody = document.getElementById('studentTableBody');
-            if (students.length === 0) { tbody.innerHTML = '<tr><td colspan="13">No students found. Sedan'; return; }
-            tbody.innerHTML = students.map(s => `
-                <tr>
-                    <td>${s.id}</td>
-                    <td>${s.rollNumber || '-'}</td>
-                    <td class="clickable-name" onclick='showProfile(${JSON.stringify(s).replace(/'/g, "&#39;")})'>${escapeHtml(s.name)}</td>
-                    <td>${escapeHtml(s.email)}</td>
-                    <td>${s.phone || '-'}</td>
-                    <td>${s.fatherName || '-'}</td>
-                    <td>${s.motherName || '-'}</td>
-                    <td>${s.parentPhone || '-'}</td>
-                    <td>${s.studentClass || '-'}</td>
-                    <td>${escapeHtml(s.course)}</td>
-                    <td>${s.age}</td>
-                    <td>${getStatusBadge(s.status)}</td>
-                    <td><button class="edit-btn" onclick="editStudent(${s.id})">✏️ Edit</button><button class="delete-btn" onclick="deleteStudent(${s.id})">🗑️ Delete</button></td>
-                 `
-            ).join('');
+            if (!students.length) { tbody.innerHTML = '<tr><td colspan="13">No students</td></tr>'; return; }
+            tbody.innerHTML = students.map(s => `<tr>
+                <td>${s.id}</td><td>${s.rollNumber || '-'}</td>
+                <td class="clickable-name" style="color:#667eea;cursor:pointer" onclick='showProfile(${JSON.stringify(s).replace(/'/g, "&#39;")})'>${escapeHtml(s.name)}</td>
+                <td>${escapeHtml(s.email)}</td><td>${s.phone || '-'}</td>
+                <td>${s.fatherName || '-'}</td><td>${s.motherName || '-'}</td>
+                <td>${s.parentPhone || '-'}</td>
+                <td>${s.studentClass || '-'}</td><td>${escapeHtml(s.course)}</td><td>${s.age}</td>
+                <td><span class="status-badge status-${s.status === 'ACTIVE' ? 'active' : (s.status === 'INACTIVE' ? 'inactive' : 'graduated')}">${s.status || 'ACTIVE'}</span></td>
+                <td><button class="edit-btn" onclick="editStudent(${s.id})">✏️ Edit</button><button class="delete-btn" onclick="deleteStudent(${s.id})">🗑️ Delete</button></td>
+            </tr>`).join('');
         }
 
-        function exportToPDF() {
-            if (filteredStudents.length === 0) { showMessage('No students to export!', 'error'); return; }
-            const pdfContent = document.createElement('div');
-            pdfContent.innerHTML = `
-                <div style="text-align:center; margin-bottom:30px;"><h1 style="color:#667eea;">🎓 Student Management System</h1><p>Generated on: ${new Date().toLocaleString()}</p><hr></div>
-                <h2>Student List</h2><p>Total Students: ${filteredStudents.length}</p>
-                <table style="width:100%; border-collapse:collapse;">
-                    <thead><tr><th>ID</th><th>Roll No</th><th>Name</th><th>Email</th><th>Class</th><th>Course</th><th>Age</th><th>Status</th></tr></thead>
-                    <tbody>${filteredStudents.map(s => `<tr><td>${s.id}</td><td>${s.rollNumber || '-'}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.email)}</td><td>${s.studentClass || '-'}</td><td>${escapeHtml(s.course)}</td><td>${s.age}</td><td>${s.status || 'ACTIVE'}</td></tr>`).join('')}</tbody>
-                </table>
-                <div style="margin-top:30px;text-align:center;"><hr><p>System Generated Document</p></div>
-            `;
-            html2pdf().set({ margin: [10,10,10,10], filename: `students_${new Date().toISOString().slice(0,19)}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(pdfContent).save();
-            showMessage(`PDF exported with ${filteredStudents.length} students!`, 'success');
-        }
-
-        function batchPrintIDCards() {
-            if (filteredStudents.length === 0) { showMessage('No students to print ID cards!', 'error'); return; }
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <html><head><title>Student ID Cards</title><style>
-                    *{margin:0;padding:0;box-sizing:border-box;}
-                    body{font-family:Arial;background:#f0f2f5;padding:20px;}
-                    .id-card{width:350px;background:white;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,0.2);margin:10px auto;overflow:hidden;page-break-inside:avoid;}
-                    .id-card-header{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:15px;text-align:center;}
-                    .id-card-body{padding:20px;display:flex;gap:15px;}
-                    .id-card-avatar{width:100px;height:100px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:bold;color:white;}
-                    .id-card-details{flex:1;}
-                    .id-card-details .detail{margin-bottom:5px;font-size:11px;}
-                    .id-card-footer{background:#f8f9fa;padding:10px;text-align:center;font-size:10px;}
-                    @media print{.id-card{box-shadow:none;border:1px solid #ddd;margin:10px;}}
-                </style></head>
-                <body><div style="display:flex;flex-wrap:wrap;justify-content:center;">${filteredStudents.map(s => `
-                    <div class="id-card"><div class="id-card-header"><h3>🎓 STUDENT ID CARD</h3><p>Valid for Academic Year 2026</p></div>
-                    <div class="id-card-body"><div class="id-card-avatar">${getInitials(s.name)}</div>
-                    <div class="id-card-details"><div class="detail"><strong>Roll No:</strong> ${s.rollNumber || 'N/A'}</div>
-                    <div class="detail"><strong>Name:</strong> ${escapeHtml(s.name)}</div>
-                    <div class="detail"><strong>Class:</strong> ${s.studentClass || 'N/A'}</div>
-                    <div class="detail"><strong>Course:</strong> ${escapeHtml(s.course)}</div>
-                    <div class="detail"><strong>Status:</strong> ${s.status || 'ACTIVE'}</div></div></div>
-                    <div class="id-card-footer"><p>📞 ${s.phone || 'No phone'} | 📧 ${s.email}</p><p>🔹 Valid ID Card • Keep with you always 🔹</p></div></div>
-                `).join('')}</div><script>window.onload=()=>setTimeout(()=>window.print(),500);<\/script></body></html>
-            `);
-            printWindow.document.close();
-            showMessage(`Printing ${filteredStudents.length} ID cards...`, 'success');
-        }
-
-        async function loadStudents() {
-            try {
-                const res = await fetch(API_URL);
-                if (!res.ok) throw new Error();
-                allStudents = await res.json();
-                filteredStudents = [...allStudents];
-                filteredStudents.sort((a, b) => a.id - b.id);
-                currentPage = 1;
-                applyPagination();
-                updateStatusCounts(allStudents);
-            } catch (error) {
-                document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="13" style="color:red;">Error loading students. Is backend running?Sedan';
+        function updatePaginationUI() {
+            const totalPages = Math.ceil(filteredStudents.length / pageSize);
+            document.getElementById('totalCount').textContent = `📊 Total: ${filteredStudents.length}`;
+            const paginationDiv = document.getElementById('pagination');
+            if (paginationDiv) {
+                paginationDiv.innerHTML = `
+                    <button class="page-btn" onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''}>⏮ First</button>
+                    <button class="page-btn" onclick="changePage(${currentPage-1})" ${currentPage === 1 ? 'disabled' : ''}>◀ Prev</button>
+                    <span>Page ${currentPage} of ${totalPages || 1}</span>
+                    <button class="page-btn" onclick="changePage(${currentPage+1})" ${currentPage === totalPages || !totalPages ? 'disabled' : ''}>Next ▶</button>
+                    <button class="page-btn" onclick="changePage(${totalPages})" ${currentPage === totalPages || !totalPages ? 'disabled' : ''}>Last ⏭</button>
+                    <select class="page-size-select" onchange="changePageSize()">
+                        <option value="5" ${pageSize===5?'selected':''}>5 per page</option>
+                        <option value="10" ${pageSize===10?'selected':''}>10 per page</option>
+                        <option value="20" ${pageSize===20?'selected':''}>20 per page</option>
+                    </select>
+                `;
             }
         }
 
-        function downloadCSV() {
-            if (filteredStudents.length === 0) { showMessage('No students to export!', 'error'); return; }
-            let csv = "ID,Roll Number,Name,Email,Student Phone,Father Name,Mother Name,Parent Phone,Class,Course,Age,Status\n";
-            filteredStudents.forEach(s => csv += `"${s.id}","${s.rollNumber || ''}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${s.fatherName || ''}","${s.motherName || ''}","${s.parentPhone || ''}","${s.studentClass || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}"\n`);
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `students_${new Date().toISOString().slice(0,19)}.csv`;
-            a.click();
-            URL.revokeObjectURL(a.href);
-            showMessage(`Downloaded ${filteredStudents.length} students!`, 'success');
+        function changePage(page) { currentPage = page; applyPagination(); }
+        function changePageSize() { pageSize = parseInt(event.target.value); currentPage = 1; applyPagination(); }
+        function searchStudents() { filterStudents(); applyPagination(); }
+        function filterStudents() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            filteredStudents = term ? allStudents.filter(s => s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || (s.rollNumber && s.rollNumber.includes(term))) : [...allStudents];
         }
+
+        function showProfile(student) {
+            const statusIcon = { 'ACTIVE': '🟢', 'INACTIVE': '🔴', 'GRADUATED': '🟠' };
+            const modalHtml = `
+                <div class="modal" id="profileModal"><div class="modal-content">
+                <div class="modal-header"><h2>👤 Student Profile</h2><span class="close" onclick="closeModal()">&times;</span></div>
+                <div class="modal-body">
+                    <div style="text-align:center;margin-bottom:15px;"><div style="width:80px;height:80px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:32px;color:white">${getInitials(student.name)}</div></div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">🎫 Roll No:</span> ${student.rollNumber || 'N/A'}</div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">👤 Name:</span> ${escapeHtml(student.name)}</div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📧 Email:</span> ${escapeHtml(student.email)}</div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📞 Student Phone:</span> ${student.phone || 'N/A'}</div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">👨 Father:</span> ${student.fatherName || 'N/A'}</div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">👩 Mother:</span> ${student.motherName || 'N/A'}</div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📞 Parent Phone:</span> ${student.parentPhone || 'N/A'}</div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📖 Class:</span> ${student.studentClass || 'N/A'}</div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📚 Course:</span> ${escapeHtml(student.course)}</div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">🎂 Age:</span> ${student.age}</div>
+                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📊 Status:</span> ${statusIcon[student.status] || '🟢'} ${student.status || 'ACTIVE'}</div>
+                </div>
+                <div class="modal-footer"><button onclick="closeModal()">Close</button></div></div></div>`;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            document.getElementById('profileModal').style.display = 'block';
+        }
+
+        function closeModal() { const modal = document.getElementById('profileModal'); if(modal) modal.remove(); }
+        function getInitials(name) { return name ? name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2) : '?'; }
 
         async function saveStudent() {
             const student = {
@@ -1256,28 +546,23 @@
                 age: parseInt(document.getElementById('age').value),
                 status: document.getElementById('status').value
             };
-            if (!student.name || !student.email || !student.course || !student.age) { showMessage('Please fill all required fields!', 'error'); return; }
-            if (student.age < 18 || student.age > 100) { showMessage('Age must be 18-100!', 'error'); return; }
-            if (student.phone && !/^\d{10}$/.test(student.phone)) { showMessage('Student phone must be 10 digits!', 'error'); return; }
-            if (student.parentPhone && !/^\d{10}$/.test(student.parentPhone)) { showMessage('Parent phone must be 10 digits!', 'error'); return; }
+            if (!student.name || !student.email || !student.course || !student.age) { showMessage('Please fill required fields!', 'error'); return; }
             try {
                 if (currentEditId) {
-                    await fetch(`${API_URL}/${currentEditId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(student) });
+                    await fetch(`${STUDENT_API}/${currentEditId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(student) });
                     showMessage('Student updated!', 'success');
                     cancelEdit();
                 } else {
-                    await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(student) });
+                    await fetch(STUDENT_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(student) });
                     showMessage('Student added!', 'success');
                     clearForm();
                 }
                 await loadStudents();
-            } catch (error) { showMessage(error.message, 'error'); }
+            } catch(e) { showMessage(e.message, 'error'); }
         }
 
-        async function editStudent(id) {
-            closeModal();
-            const res = await fetch(`${API_URL}/${id}`);
-            const s = await res.json();
+        function editStudent(id) {
+            const s = allStudents.find(s => s.id === id);
             document.getElementById('name').value = s.name;
             document.getElementById('email').value = s.email;
             document.getElementById('phone').value = s.phone || '';
@@ -1290,30 +575,210 @@
             document.getElementById('age').value = s.age;
             document.getElementById('status').value = s.status || 'ACTIVE';
             currentEditId = id;
-            document.getElementById('formTitle').textContent = '✏️ Edit Student';
-            document.getElementById('saveBtn').textContent = 'Update';
+            document.getElementById('formTitle').innerHTML = '✏️ Edit Student';
+            document.getElementById('saveBtn').innerHTML = 'Update Student';
             document.getElementById('cancelBtn').style.display = 'inline-block';
-            document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
         }
 
-        async function deleteStudent(id) {
-            if (confirm('Delete this student?')) {
-                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-                showMessage('Student deleted!', 'success');
-                await loadStudents();
+        function cancelEdit() { clearForm(); currentEditId = null; document.getElementById('formTitle').innerHTML = '➕ Add New Student'; document.getElementById('saveBtn').innerHTML = 'Add Student'; document.getElementById('cancelBtn').style.display = 'none'; }
+        function clearForm() { ['name','email','phone','rollNumber','studentClass','fatherName','motherName','parentPhone','course','age'].forEach(id => document.getElementById(id).value = ''); document.getElementById('status').value = 'ACTIVE'; }
+        async function deleteStudent(id) { if(confirm('Delete this student?')){ await fetch(`${STUDENT_API}/${id}`, { method: 'DELETE' }); showMessage('Student deleted!','success'); await loadStudents(); } }
+
+        // ============ MARKS & EXAMS FUNCTIONS ============
+        async function addExam() {
+            const exam = { name: document.getElementById('examName').value, examDate: document.getElementById('examDate').value, semester: document.getElementById('examSemester').value, academicYear: document.getElementById('examYear').value };
+            if(!exam.name) { showMessage('Enter exam name!', 'error'); return; }
+            await fetch('http://localhost:8080/api/exams', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(exam) });
+            showMessage('Exam added!', 'success');
+            loadMarksData();
+        }
+
+        async function addMarks() {
+            const obtained = parseInt(document.getElementById('marksObtained').value);
+            const total = parseInt(document.getElementById('totalMarks').value);
+            const percentage = (obtained / total) * 100;
+            let grade = 'F';
+            if (percentage >= 90) grade = 'A+'; else if (percentage >= 80) grade = 'A'; else if (percentage >= 70) grade = 'B+';
+            else if (percentage >= 60) grade = 'B'; else if (percentage >= 50) grade = 'C+'; else if (percentage >= 40) grade = 'C';
+            
+            const marks = {
+                studentId: parseInt(document.getElementById('selectStudent').value),
+                examId: parseInt(document.getElementById('selectExam').value),
+                subject: document.getElementById('subject').value,
+                marksObtained: obtained,
+                totalMarks: total,
+                grade: grade
+            };
+            if(!marks.subject || !marks.marksObtained) { showMessage('Fill all fields!', 'error'); return; }
+            await fetch('http://localhost:8080/api/marks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(marks) });
+            showMessage('Marks added!', 'success');
+            loadMarksData();
+        }
+
+        async function loadMarksData() {
+            try {
+                const [examsRes, marksRes] = await Promise.all([
+                    fetch('http://localhost:8080/api/exams'),
+                    fetch('http://localhost:8080/api/marks')
+                ]);
+                allExams = await examsRes.json();
+                allMarks = await marksRes.json();
+                populateExamSelects();
+                displayMarks();
+            } catch(e) { console.error(e); }
+        }
+
+        function populateExamSelects() {
+            const examSelect = document.getElementById('selectExam');
+            const resultExam = document.getElementById('resultExam');
+            if (examSelect) examSelect.innerHTML = '<option value="">Select Exam</option>' + allExams.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+            if (resultExam) resultExam.innerHTML = '<option value="">Select Exam</option>' + allExams.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+        }
+
+        function displayMarks() {
+            const tbody = document.getElementById('marksTableBody');
+            if (!tbody) return;
+            if (!allMarks.length) { tbody.innerHTML = '<tr><td colspan="6">No marks added yet</td></tr>'; return; }
+            tbody.innerHTML = allMarks.map(m => {
+                const student = allStudents.find(s => s.id === m.studentId);
+                const exam = allExams.find(e => e.id === m.examId);
+                return `<tr>
+                    <td>${student ? student.name : 'N/A'}</td>
+                    <td>${exam ? exam.name : 'N/A'}</td>
+                    <td>${m.subject}</td>
+                    <td>${m.marksObtained}/${m.totalMarks}</td>
+                    <td><strong>${m.grade}</strong></td>
+                    <td><button class="delete-btn" onclick="deleteMarks(${m.id})">Delete</button></td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function deleteMarks(id) {
+            if(confirm('Delete these marks?')) {
+                await fetch(`http://localhost:8080/api/marks/${id}`, { method: 'DELETE' });
+                showMessage('Marks deleted!', 'success');
+                loadMarksData();
             }
         }
 
-        function cancelEdit() { clearForm(); currentEditId = null; document.getElementById('formTitle').textContent = '➕ Add New Student'; document.getElementById('saveBtn').textContent = 'Add Student'; document.getElementById('cancelBtn').style.display = 'none'; }
-        function clearForm() { ['name', 'email', 'phone', 'rollNumber', 'studentClass', 'fatherName', 'motherName', 'parentPhone', 'course', 'age'].forEach(id => document.getElementById(id).value = ''); document.getElementById('status').value = 'ACTIVE'; }
-        function escapeCsv(text) { return text ? text.replace(/"/g, '""') : ''; }
-        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-        function toggleDarkMode() { document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')); document.querySelector('.btn-dark').textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode'; }
+        // ============ RESULTS FUNCTIONS ============
+        async function loadResultsData() {
+            try {
+                const [examsRes, marksRes] = await Promise.all([
+                    fetch('http://localhost:8080/api/exams'),
+                    fetch('http://localhost:8080/api/marks')
+                ]);
+                allExams = await examsRes.json();
+                allMarks = await marksRes.json();
+                populateExamSelects();
+            } catch(e) { console.error(e); }
+        }
 
-        window.onclick = (event) => { if (event.target === document.getElementById('profileModal')) closeModal(); };
-        document.getElementById('modalEditBtn').onclick = editFromModal;
-        if (localStorage.getItem('darkMode') === 'true') toggleDarkMode();
+        function generateResult() {
+            const examId = document.getElementById('resultExam').value;
+            const studentId = document.getElementById('resultStudent').value;
+            if (!examId || !studentId) { document.getElementById('reportCardContainer').innerHTML = ''; return; }
+            
+            const student = allStudents.find(s => s.id == studentId);
+            const exam = allExams.find(e => e.id == examId);
+            const studentMarks = allMarks.filter(m => m.studentId == studentId && m.examId == examId);
+            
+            if (!studentMarks.length) { document.getElementById('reportCardContainer').innerHTML = '<div class="card"><p style="text-align:center">No marks found for this student in this exam.</p></div>'; return; }
+            
+            let totalObtained = 0, totalMax = 0;
+            studentMarks.forEach(m => { totalObtained += m.marksObtained; totalMax += m.totalMarks; });
+            const percentage = (totalObtained / totalMax) * 100;
+            let overallGrade = 'F';
+            if (percentage >= 90) overallGrade = 'A+'; else if (percentage >= 80) overallGrade = 'A'; else if (percentage >= 70) overallGrade = 'B+';
+            else if (percentage >= 60) overallGrade = 'B'; else if (percentage >= 50) overallGrade = 'C+'; else if (percentage >= 40) overallGrade = 'C';
+            
+            const gradeClass = overallGrade === 'A+' || overallGrade === 'A' ? 'grade-A' : (overallGrade === 'B+' || overallGrade === 'B' ? 'grade-B' : (overallGrade === 'C+' || overallGrade === 'C' ? 'grade-C' : 'grade-F'));
+            
+            const reportHtml = `
+                <div class="report-card" id="reportCard">
+                    <div class="report-header">
+                        <h2>🎓 STUDENT REPORT CARD</h2>
+                        <p>${exam.name} | ${exam.academicYear || ''} | ${exam.semester || ''}</p>
+                    </div>
+                    <div class="student-info">
+                        <div><strong>Student Name:</strong> ${escapeHtml(student.name)}</div>
+                        <div><strong>Roll Number:</strong> ${student.rollNumber || 'N/A'}</div>
+                        <div><strong>Class:</strong> ${student.studentClass || 'N/A'}</div>
+                        <div><strong>Course:</strong> ${escapeHtml(student.course)}</div>
+                        <div><strong>Father's Name:</strong> ${student.fatherName || 'N/A'}</div>
+                        <div><strong>Mother's Name:</strong> ${student.motherName || 'N/A'}</div>
+                    </div>
+                    <table class="marks-table">
+                        <thead><tr><th>Subject</th><th>Marks Obtained</th><th>Total Marks</th><th>Grade</th></tr></thead>
+                        <tbody>${studentMarks.map(m => `<tr><td>${m.subject}</td><td>${m.marksObtained}</td><td>${m.totalMarks}</td><td>${m.grade}</td></tr>`).join('')}</tbody>
+                    </table>
+                    <div class="result-summary ${gradeClass}">
+                        <p>Total: ${totalObtained} / ${totalMax}</p>
+                        <p>Percentage: ${percentage.toFixed(2)}%</p>
+                        <p>Overall Grade: <strong>${overallGrade}</strong></p>
+                        <p>Result: ${percentage >= 40 ? 'PASS ✅' : 'FAIL ❌'}</p>
+                    </div>
+                    <div style="text-align:center; margin-top:20px;">
+                        <button class="print-btn" onclick="printReportCard()">🖨️ Print Report Card</button>
+                        <button class="print-btn" onclick="downloadReportCardPDF()">📄 Download PDF</button>
+                    </div>
+                </div>`;
+            document.getElementById('reportCardContainer').innerHTML = reportHtml;
+        }
+
+        function printReportCard() {
+            const printContent = document.getElementById('reportCard').cloneNode(true);
+            const originalTitle = document.title;
+            document.title = 'Student Report Card';
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>Student Report Card</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><style>body{font-family:Arial;padding:20px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ddd;padding:8px;text-align:center;}th{background:#667eea;color:white;}.result-summary{padding:15px;text-align:center;}.grade-Aplus,.grade-A{background:#c6f6d5;}.grade-Bplus,.grade-B{background:#feebc8;}.grade-Cplus,.grade-C{background:#fed7d7;}.grade-F{background:#fed7d7;}</style></head><body>' + printContent.innerHTML + '</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+            document.title = originalTitle;
+        }
+
+        function downloadReportCardPDF() {
+            const element = document.getElementById('reportCard');
+            const opt = { margin: [10,10,10,10], filename: `report_card_${Date.now()}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // ============ Export Functions ============
+        function downloadCSV() {
+            if (!filteredStudents.length) { showMessage('No students to export!', 'error'); return; }
+            let csv = "ID,Roll Number,Name,Email,Student Phone,Father Name,Mother Name,Parent Phone,Class,Course,Age,Status\n";
+            filteredStudents.forEach(s => csv += `"${s.id}","${s.rollNumber || ''}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${s.fatherName || ''}","${s.motherName || ''}","${s.parentPhone || ''}","${s.studentClass || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}"\n`);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `students_${new Date().toISOString().slice(0,19)}.csv`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showMessage(`Downloaded ${filteredStudents.length} students!`, 'success');
+        }
+
+        function exportToPDF() {
+            if (!filteredStudents.length) { showMessage('No students to export!', 'error'); return; }
+            const pdfContent = document.createElement('div');
+            pdfContent.innerHTML = `<div style="padding:20px"><h1>Student Management System</h1><p>Generated: ${new Date().toLocaleString()}</p><p>Total Students: ${filteredStudents.length}</p><table border="1" style="border-collapse:collapse;width:100%"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Class</th><th>Course</th><th>Status</th></tr></thead><tbody>${filteredStudents.map(s => `<tr><td>${s.id}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.email)}</td><td>${s.studentClass || '-'}</td><td>${escapeHtml(s.course)}</td><td>${s.status || 'ACTIVE'}</td></tr>`).join('')}</tbody></table></div>`;
+            html2pdf().set({ margin: 10, filename: `students_${Date.now()}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(pdfContent).save();
+            showMessage(`PDF exported!`, 'success');
+        }
+
+        function batchPrintIDCards() {
+            if (!filteredStudents.length) { showMessage('No students to print!', 'error'); return; }
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`<html><head><title>Student ID Cards</title><style>body{font-family:Arial;padding:20px;}.id-card{width:350px;border:1px solid #ddd;border-radius:15px;margin:10px;padding:15px;display:inline-block;}.header{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:15px;border-radius:10px;text-align:center;}</style></head><body><div style="display:flex;flex-wrap:wrap">${filteredStudents.map(s => `<div class="id-card"><div class="header"><h3>🎓 STUDENT ID CARD</h3></div><p><strong>Name:</strong> ${escapeHtml(s.name)}</p><p><strong>Roll No:</strong> ${s.rollNumber || 'N/A'}</p><p><strong>Class:</strong> ${s.studentClass || 'N/A'}</p><p><strong>Course:</strong> ${escapeHtml(s.course)}</p><p><strong>Email:</strong> ${escapeHtml(s.email)}</p><p><strong>Phone:</strong> ${s.phone || 'N/A'}</p></div>`).join('')}</div><script>window.onload=()=>setTimeout(()=>window.print(),500);<\/script></body></html>`);
+            printWindow.document.close();
+        }
+
+        function escapeHtml(text) { if(!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        function escapeCsv(text) { return text ? text.replace(/"/g, '""') : ''; }
+        function toggleDarkMode() { document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')); }
+        
+        if(localStorage.getItem('darkMode') === 'true') toggleDarkMode();
         loadStudents();
+        loadMarksData();
     </script>
 </body>
 </html>
