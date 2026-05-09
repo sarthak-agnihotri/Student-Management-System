@@ -199,7 +199,7 @@
 
         .search-box {
             padding: 12px 20px;
-            width: 300px;
+            width: 350px;
             border: 2px solid #e0e0e0;
             border-radius: 30px;
             font-size: 14px;
@@ -328,9 +328,10 @@
         }
 
         th, td {
-            padding: 12px;
+            padding: 10px;
             text-align: left;
             border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
         }
 
         th {
@@ -543,7 +544,7 @@
 
         .detail-label {
             font-weight: 600;
-            width: 90px;
+            width: 100px;
             color: #667eea;
             font-size: 14px;
         }
@@ -686,52 +687,22 @@
         }
 
         @media print {
-            .no-print {
-                display: none;
-            }
-            .id-card {
-                box-shadow: none;
-                border: 1px solid #ddd;
-                margin: 10px;
-            }
+            .no-print { display: none; }
+            .id-card { box-shadow: none; border: 1px solid #ddd; margin: 10px; }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .form-group {
-                flex-direction: column;
-            }
-            .stats-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .status-summary {
-                flex-direction: column;
-            }
-            .search-box {
-                width: 100%;
-            }
-            .btn-group {
-                justify-content: center;
-            }
-            table {
-                font-size: 11px;
-            }
-            th, td {
-                padding: 6px;
-            }
-            .profile-detail {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .detail-label {
-                width: 100%;
-                margin-bottom: 5px;
-            }
-            .modal-content {
-                width: 95%;
-                margin: 5% auto;
-            }
+            .form-group { flex-direction: column; }
+            .stats-bar { flex-direction: column; align-items: stretch; }
+            .status-summary { flex-direction: column; }
+            .search-box { width: 100%; }
+            .btn-group { justify-content: center; }
+            table { font-size: 10px; }
+            th, td { padding: 5px; }
+            .profile-detail { flex-direction: column; align-items: flex-start; }
+            .detail-label { width: 100%; margin-bottom: 5px; }
+            .modal-content { width: 95%; margin: 5% auto; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -772,7 +743,7 @@
 
         <div class="stats-bar">
             <div class="total-count" id="totalCount">📊 Total Students: 0</div>
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by name, roll number, email, or course..." onkeyup="searchStudents()">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by name, roll number, class, course, father/mother name..." onkeyup="searchStudents()">
             <div class="btn-group">
                 <button onclick="downloadCSV()" class="btn btn-csv">📥 Download CSV</button>
                 <button onclick="exportToPDF()" class="btn btn-pdf">📄 Export PDF</button>
@@ -786,9 +757,12 @@
             <div class="form-group">
                 <input type="text" id="name" placeholder="Full Name" required>
                 <input type="email" id="email" placeholder="Email Address" required>
-                <input type="tel" id="phone" placeholder="Phone Number (10 digits)">
-                <input type="text" id="rollNumber" placeholder="Roll Number (e.g., 001)" required>
-                <input type="text" id="studentClass" placeholder="Class (e.g., 10th, 12th, BCA)" required>
+                <input type="tel" id="phone" placeholder="Student Phone (10 digits)">
+                <input type="text" id="rollNumber" placeholder="Roll Number (e.g., 001)">
+                <input type="text" id="studentClass" placeholder="Class (e.g., 10th, 12th)">
+                <input type="text" id="fatherName" placeholder="Father's Name">
+                <input type="text" id="motherName" placeholder="Mother's Name">
+                <input type="tel" id="parentPhone" placeholder="Parent Phone (10 digits)">
                 <input type="text" id="course" placeholder="Course Name" required>
                 <input type="number" id="age" placeholder="Age" required>
                 <select id="status">
@@ -811,7 +785,10 @@
                             <th onclick="sortTable('rollNumber')">Roll No <span class="sort-icon" id="sort-icon-rollNumber">↕️</span></th>
                             <th onclick="sortTable('name')">Name <span class="sort-icon" id="sort-icon-name">↕️</span></th>
                             <th onclick="sortTable('email')">Email <span class="sort-icon" id="sort-icon-email">↕️</span></th>
-                            <th onclick="sortTable('phone')">Phone <span class="sort-icon" id="sort-icon-phone">↕️</span></th>
+                            <th onclick="sortTable('phone')">Student Phone <span class="sort-icon" id="sort-icon-phone">↕️</span></th>
+                            <th>Father</th>
+                            <th>Mother</th>
+                            <th>Parent Phone</th>
                             <th onclick="sortTable('studentClass')">Class <span class="sort-icon" id="sort-icon-studentClass">↕️</span></th>
                             <th onclick="sortTable('course')">Course <span class="sort-icon" id="sort-icon-course">↕️</span></th>
                             <th onclick="sortTable('age')">Age <span class="sort-icon" id="sort-icon-age">↕️</span></th>
@@ -820,7 +797,7 @@
                         </tr>
                     </thead>
                     <tbody id="studentTableBody">
-                        <tr><td colspan="10" style="text-align: center;">Loading students...Sedan
+                        <tr><td colspan="13" style="text-align: center;">Loading students...Sedan
                     </tbody>
                 </table>
             </div>
@@ -886,7 +863,10 @@
                 <div class="profile-detail"><div class="detail-label">📋 ID:</div><div class="detail-value">${student.id}</div></div>
                 <div class="profile-detail"><div class="detail-label">👤 Name:</div><div class="detail-value">${escapeHtml(student.name)}</div></div>
                 <div class="profile-detail"><div class="detail-label">📧 Email:</div><div class="detail-value">${escapeHtml(student.email)}</div></div>
-                <div class="profile-detail"><div class="detail-label">📞 Phone:</div><div class="detail-value">${student.phone || 'Not provided'}</div></div>
+                <div class="profile-detail"><div class="detail-label">📞 Student Phone:</div><div class="detail-value">${student.phone || 'Not provided'}</div></div>
+                <div class="profile-detail"><div class="detail-label">👨 Father:</div><div class="detail-value">${student.fatherName || 'Not provided'}</div></div>
+                <div class="profile-detail"><div class="detail-label">👩 Mother:</div><div class="detail-value">${student.motherName || 'Not provided'}</div></div>
+                <div class="profile-detail"><div class="detail-label">📞 Parent Phone:</div><div class="detail-value">${student.parentPhone || 'Not provided'}</div></div>
                 <div class="profile-detail"><div class="detail-label">📖 Class:</div><div class="detail-value">${student.studentClass || 'Not assigned'}</div></div>
                 <div class="profile-detail"><div class="detail-label">📚 Course:</div><div class="detail-value">${escapeHtml(student.course)}</div></div>
                 <div class="profile-detail"><div class="detail-label">🎂 Age:</div><div class="detail-value">${student.age} years</div></div>
@@ -916,7 +896,8 @@
             let data = term === '' ? [...allStudents] : allStudents.filter(s => 
                 s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || 
                 (s.rollNumber && s.rollNumber.includes(term)) || (s.course && s.course.toLowerCase().includes(term)) ||
-                (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term))
+                (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term)) ||
+                (s.fatherName && s.fatherName.toLowerCase().includes(term)) || (s.motherName && s.motherName.toLowerCase().includes(term))
             );
 
             const sorted = data.sort((a, b) => {
@@ -954,7 +935,8 @@
                 filtered = allStudents.filter(s => 
                     s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || 
                     (s.rollNumber && s.rollNumber.includes(term)) || (s.course && s.course.toLowerCase().includes(term)) ||
-                    (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term))
+                    (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term)) ||
+                    (s.fatherName && s.fatherName.toLowerCase().includes(term)) || (s.motherName && s.motherName.toLowerCase().includes(term))
                 );
             }
             const sorted = [...filtered].sort((a, b) => {
@@ -976,7 +958,7 @@
 
         function displayStudents(students) {
             const tbody = document.getElementById('studentTableBody');
-            if (students.length === 0) { tbody.innerHTML = '<tr><td colspan="10">No students found. Sedan'; return; }
+            if (students.length === 0) { tbody.innerHTML = '<tr><td colspan="13">No students found. Sedan'; return; }
             tbody.innerHTML = students.map(s => `
                 <tr>
                     <td>${s.id}</td>
@@ -984,6 +966,9 @@
                     <td class="clickable-name" onclick='showProfile(${JSON.stringify(s).replace(/'/g, "&#39;")})'>${escapeHtml(s.name)}</td>
                     <td>${escapeHtml(s.email)}</td>
                     <td>${s.phone || '-'}</td>
+                    <td>${s.fatherName || '-'}</td>
+                    <td>${s.motherName || '-'}</td>
+                    <td>${s.parentPhone || '-'}</td>
                     <td>${s.studentClass || '-'}</td>
                     <td>${escapeHtml(s.course)}</td>
                     <td>${s.age}</td>
@@ -1005,14 +990,7 @@
                 <div style="text-align:center; margin-bottom:30px;"><h1 style="color:#667eea;">🎓 Student Management System</h1><p>Generated on: ${new Date().toLocaleString()}</p><hr></div>
                 <h2>Student List</h2><p>Total Students: ${students.length}</p>
                 <table style="width:100%; border-collapse:collapse;">
-                    <thead><tr><th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">ID</th>
-                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Roll No</th>
-                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Name</th>
-                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Email</th>
-                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Class</th>
-                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Course</th>
-                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Age</th>
-                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Status</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Roll No</th><th>Name</th><th>Email</th><th>Class</th><th>Course</th><th>Age</th><th>Status</th></tr></thead>
                     <tbody>${students.map(s => `<tr><td>${s.id}</td><td>${s.rollNumber || '-'}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.email)}</td><td>${s.studentClass || '-'}</td><td>${escapeHtml(s.course)}</td><td>${s.age}</td><td>${s.status || 'ACTIVE'}</td></tr>`).join('')}</tbody>
                 </table>
                 <div style="margin-top:30px;text-align:center;"><hr><p>System Generated Document</p></div>
@@ -1062,7 +1040,7 @@
                 allStudents = await res.json();
                 sortTable('id');
             } catch (error) {
-                document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="10" style="color:red;">Error loading students. Is backend running?</td></tr>';
+                document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="13" style="color:red;">Error loading students. Is backend running?Sedan';
             }
         }
 
@@ -1070,8 +1048,8 @@
             const term = document.getElementById('searchInput').value.toLowerCase();
             let students = term === '' ? [...allStudents] : allStudents.filter(s => s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || (s.course && s.course.toLowerCase().includes(term)));
             if (students.length === 0) { showMessage('No students to export!', 'error'); return; }
-            let csv = "ID,Roll Number,Name,Email,Phone,Class,Course,Age,Status\n";
-            students.forEach(s => csv += `"${s.id}","${s.rollNumber || ''}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${s.studentClass || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}"\n`);
+            let csv = "ID,Roll Number,Name,Email,Student Phone,Father Name,Mother Name,Parent Phone,Class,Course,Age,Status\n";
+            students.forEach(s => csv += `"${s.id}","${s.rollNumber || ''}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${s.fatherName || ''}","${s.motherName || ''}","${s.parentPhone || ''}","${s.studentClass || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}"\n`);
             const blob = new Blob([csv], { type: 'text/csv' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
@@ -1088,13 +1066,17 @@
                 phone: document.getElementById('phone').value.trim(),
                 rollNumber: document.getElementById('rollNumber').value.trim(),
                 studentClass: document.getElementById('studentClass').value.trim(),
+                fatherName: document.getElementById('fatherName').value.trim(),
+                motherName: document.getElementById('motherName').value.trim(),
+                parentPhone: document.getElementById('parentPhone').value.trim(),
                 course: document.getElementById('course').value.trim(),
                 age: parseInt(document.getElementById('age').value),
                 status: document.getElementById('status').value
             };
             if (!student.name || !student.email || !student.course || !student.age) { showMessage('Please fill all required fields!', 'error'); return; }
             if (student.age < 18 || student.age > 100) { showMessage('Age must be 18-100!', 'error'); return; }
-            if (student.phone && !/^\d{10}$/.test(student.phone)) { showMessage('Phone must be 10 digits!', 'error'); return; }
+            if (student.phone && !/^\d{10}$/.test(student.phone)) { showMessage('Student phone must be 10 digits!', 'error'); return; }
+            if (student.parentPhone && !/^\d{10}$/.test(student.parentPhone)) { showMessage('Parent phone must be 10 digits!', 'error'); return; }
             try {
                 if (currentEditId) {
                     await fetch(`${API_URL}/${currentEditId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(student) });
@@ -1118,6 +1100,9 @@
             document.getElementById('phone').value = s.phone || '';
             document.getElementById('rollNumber').value = s.rollNumber || '';
             document.getElementById('studentClass').value = s.studentClass || '';
+            document.getElementById('fatherName').value = s.fatherName || '';
+            document.getElementById('motherName').value = s.motherName || '';
+            document.getElementById('parentPhone').value = s.parentPhone || '';
             document.getElementById('course').value = s.course;
             document.getElementById('age').value = s.age;
             document.getElementById('status').value = s.status || 'ACTIVE';
@@ -1137,7 +1122,7 @@
         }
 
         function cancelEdit() { clearForm(); currentEditId = null; document.getElementById('formTitle').textContent = '➕ Add New Student'; document.getElementById('saveBtn').textContent = 'Add Student'; document.getElementById('cancelBtn').style.display = 'none'; }
-        function clearForm() { ['name', 'email', 'phone', 'rollNumber', 'studentClass', 'course', 'age'].forEach(id => document.getElementById(id).value = ''); document.getElementById('status').value = 'ACTIVE'; }
+        function clearForm() { ['name', 'email', 'phone', 'rollNumber', 'studentClass', 'fatherName', 'motherName', 'parentPhone', 'course', 'age'].forEach(id => document.getElementById(id).value = ''); document.getElementById('status').value = 'ACTIVE'; }
         function escapeCsv(text) { return text ? text.replace(/"/g, '""') : ''; }
         function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
         function toggleDarkMode() { document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')); document.querySelector('.btn-dark').textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode'; }
