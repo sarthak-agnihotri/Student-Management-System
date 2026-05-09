@@ -40,7 +40,6 @@
 
         .container { max-width: 1600px; margin: 0 auto; }
 
-        /* Navigation Tabs */
         .nav-tabs {
             display: flex;
             gap: 10px;
@@ -61,23 +60,10 @@
             color: #333;
         }
 
-        body.dark .nav-tab {
-            background: #4a5568;
-            color: #f0f2f5;
-        }
-
-        .nav-tab.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
+        body.dark .nav-tab { background: #4a5568; color: #f0f2f5; }
+        .nav-tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
         .header {
             display: flex;
@@ -211,9 +197,7 @@
 
         .edit-btn { background: #4299e1; padding: 6px 12px; border-radius: 8px; font-size: 12px; margin-right: 5px; }
         .delete-btn { background: #f56565; padding: 6px 12px; border-radius: 8px; font-size: 12px; }
-        .mark-btn { background: #48bb78; padding: 6px 12px; border-radius: 8px; font-size: 12px; }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -244,13 +228,11 @@
         .modal-body { padding: 20px 25px; }
         .close { font-size: 28px; cursor: pointer; }
 
-        /* Pagination */
         .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
         .page-btn { padding: 8px 14px; border: 1px solid #ddd; background: white; border-radius: 8px; cursor: pointer; }
         .page-btn.active { background: #667eea; color: white; border-color: #667eea; }
         .page-size-select { padding: 8px 12px; border-radius: 8px; margin-left: 10px; }
 
-        /* Report Card */
         .report-card {
             max-width: 800px;
             margin: 0 auto;
@@ -293,7 +275,6 @@
 
         <div id="message" style="display:none; padding:12px; margin-bottom:20px; border-radius:12px;"></div>
 
-        <!-- Navigation Tabs -->
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showTab('students')">📚 Students</button>
             <button class="nav-tab" onclick="showTab('marks')">📝 Marks & Exams</button>
@@ -310,7 +291,7 @@
 
             <div class="stats-bar">
                 <div class="total-count" id="totalCount">📊 Total: 0</div>
-                <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by name, email, roll number..." onkeyup="searchStudents()">
+                <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search..." onkeyup="searchStudents()">
                 <div class="btn-group">
                     <button onclick="downloadCSV()" class="btn btn-csv">📥 CSV</button>
                     <button onclick="exportToPDF()" class="btn btn-pdf">📄 PDF</button>
@@ -343,7 +324,7 @@
                 <div style="overflow-x:auto;">
                     <table id="studentTable">
                         <thead><tr><th>ID</th><th>Roll No</th><th>Name</th><th>Email</th><th>Phone</th><th>Father</th><th>Mother</th><th>Parent Phone</th><th>Class</th><th>Course</th><th>Age</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody id="studentTableBody"><tr><td colspan="13">Loading...</td></tr></tbody>
+                        <tbody id="studentTableBody"><tr><td colspan="13">Loading...Sedan</tbody>
                     </table>
                 </div>
                 <div class="pagination" id="pagination"></div>
@@ -355,7 +336,7 @@
             <div class="card">
                 <h2>📅 Add Exam</h2>
                 <div class="form-group">
-                    <input type="text" id="examName" placeholder="Exam Name (e.g., Mid Term)">
+                    <input type="text" id="examName" placeholder="Exam Name">
                     <input type="date" id="examDate">
                     <input type="text" id="examSemester" placeholder="Semester">
                     <input type="text" id="examYear" placeholder="Academic Year">
@@ -380,7 +361,7 @@
                 <div style="overflow-x:auto;">
                     <table id="marksTable">
                         <thead><tr><th>Student</th><th>Exam</th><th>Subject</th><th>Marks</th><th>Grade</th><th>Actions</th></tr></thead>
-                        <tbody id="marksTableBody"><tr><td colspan="6">Loading...</td></tr></tbody>
+                        <tbody id="marksTableBody"><td><td colspan="6">Loading...Sedan</tbody>
                     </table>
                 </div>
             </div>
@@ -400,7 +381,6 @@
     </div>
 
     <script>
-        // API URLs
         const STUDENT_API = 'http://localhost:8080/api/students';
         let allStudents = [];
         let allExams = [];
@@ -423,8 +403,7 @@
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.getElementById(tab + 'Tab').classList.add('active');
             event.target.classList.add('active');
-            if (tab === 'marks') loadMarksData();
-            if (tab === 'results') loadResultsData();
+            if (tab === 'marks' || tab === 'results') loadMarksData();
         }
 
         // ============ STUDENT FUNCTIONS ============
@@ -440,12 +419,9 @@
         }
 
         function updateStatusCounts() {
-            const active = allStudents.filter(s => s.status === 'ACTIVE').length;
-            const inactive = allStudents.filter(s => s.status === 'INACTIVE').length;
-            const graduated = allStudents.filter(s => s.status === 'GRADUATED').length;
-            document.getElementById('activeCount').textContent = active;
-            document.getElementById('inactiveCount').textContent = inactive;
-            document.getElementById('graduatedCount').textContent = graduated;
+            document.getElementById('activeCount').textContent = allStudents.filter(s => s.status === 'ACTIVE').length;
+            document.getElementById('inactiveCount').textContent = allStudents.filter(s => s.status === 'INACTIVE').length;
+            document.getElementById('graduatedCount').textContent = allStudents.filter(s => s.status === 'GRADUATED').length;
         }
 
         function populateStudentSelects() {
@@ -464,17 +440,22 @@
 
         function displayStudents(students) {
             const tbody = document.getElementById('studentTableBody');
-            if (!students.length) { tbody.innerHTML = '<tr><td colspan="13">No students</td></tr>'; return; }
+            if (!students.length) { tbody.innerHTML = '<tr><td colspan="13">No studentsSedan'; return; }
             tbody.innerHTML = students.map(s => `<tr>
-                <td>${s.id}</td><td>${s.rollNumber || '-'}</td>
-                <td class="clickable-name" style="color:#667eea;cursor:pointer" onclick='showProfile(${JSON.stringify(s).replace(/'/g, "&#39;")})'>${escapeHtml(s.name)}</td>
-                <td>${escapeHtml(s.email)}</td><td>${s.phone || '-'}</td>
-                <td>${s.fatherName || '-'}</td><td>${s.motherName || '-'}</td>
+                <td>${s.id}</td>
+                <td>${s.rollNumber || '-'}</td>
+                <td style="color:#667eea;cursor:pointer" onclick='showProfile(${JSON.stringify(s).replace(/'/g, "&#39;")})'>${escapeHtml(s.name)}</td>
+                <td>${escapeHtml(s.email)}</td>
+                <td>${s.phone || '-'}</td>
+                <td>${s.fatherName || '-'}</td>
+                <td>${s.motherName || '-'}</td>
                 <td>${s.parentPhone || '-'}</td>
-                <td>${s.studentClass || '-'}</td><td>${escapeHtml(s.course)}</td><td>${s.age}</td>
+                <td>${s.studentClass || '-'}</td>
+                <td>${escapeHtml(s.course)}</td>
+                <td>${s.age}</td>
                 <td><span class="status-badge status-${s.status === 'ACTIVE' ? 'active' : (s.status === 'INACTIVE' ? 'inactive' : 'graduated')}">${s.status || 'ACTIVE'}</span></td>
                 <td><button class="edit-btn" onclick="editStudent(${s.id})">✏️ Edit</button><button class="delete-btn" onclick="deleteStudent(${s.id})">🗑️ Delete</button></td>
-            </tr>`).join('');
+            </td>`).join('');
         }
 
         function updatePaginationUI() {
@@ -512,17 +493,17 @@
                 <div class="modal-header"><h2>👤 Student Profile</h2><span class="close" onclick="closeModal()">&times;</span></div>
                 <div class="modal-body">
                     <div style="text-align:center;margin-bottom:15px;"><div style="width:80px;height:80px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:32px;color:white">${getInitials(student.name)}</div></div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">🎫 Roll No:</span> ${student.rollNumber || 'N/A'}</div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">👤 Name:</span> ${escapeHtml(student.name)}</div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📧 Email:</span> ${escapeHtml(student.email)}</div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📞 Student Phone:</span> ${student.phone || 'N/A'}</div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">👨 Father:</span> ${student.fatherName || 'N/A'}</div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">👩 Mother:</span> ${student.motherName || 'N/A'}</div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📞 Parent Phone:</span> ${student.parentPhone || 'N/A'}</div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📖 Class:</span> ${student.studentClass || 'N/A'}</div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📚 Course:</span> ${escapeHtml(student.course)}</div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">🎂 Age:</span> ${student.age}</div>
-                    <div class="profile-detail"><span style="font-weight:600;width:100px;display:inline-block">📊 Status:</span> ${statusIcon[student.status] || '🟢'} ${student.status || 'ACTIVE'}</div>
+                    <div><strong>🎫 Roll No:</strong> ${student.rollNumber || 'N/A'}</div><br>
+                    <div><strong>👤 Name:</strong> ${escapeHtml(student.name)}</div><br>
+                    <div><strong>📧 Email:</strong> ${escapeHtml(student.email)}</div><br>
+                    <div><strong>📞 Phone:</strong> ${student.phone || 'N/A'}</div><br>
+                    <div><strong>👨 Father:</strong> ${student.fatherName || 'N/A'}</div><br>
+                    <div><strong>👩 Mother:</strong> ${student.motherName || 'N/A'}</div><br>
+                    <div><strong>📞 Parent Phone:</strong> ${student.parentPhone || 'N/A'}</div><br>
+                    <div><strong>📖 Class:</strong> ${student.studentClass || 'N/A'}</div><br>
+                    <div><strong>📚 Course:</strong> ${escapeHtml(student.course)}</div><br>
+                    <div><strong>🎂 Age:</strong> ${student.age}</div><br>
+                    <div><strong>📊 Status:</strong> ${statusIcon[student.status] || '🟢'} ${student.status || 'ACTIVE'}</div>
                 </div>
                 <div class="modal-footer"><button onclick="closeModal()">Close</button></div></div></div>`;
             document.body.insertAdjacentHTML('beforeend', modalHtml);
@@ -617,13 +598,17 @@
 
         async function loadMarksData() {
             try {
-                const [examsRes, marksRes] = await Promise.all([
+                const [studentsRes, examsRes, marksRes] = await Promise.all([
+                    fetch(STUDENT_API),
                     fetch('http://localhost:8080/api/exams'),
                     fetch('http://localhost:8080/api/marks')
                 ]);
+                allStudents = await studentsRes.json();
                 allExams = await examsRes.json();
                 allMarks = await marksRes.json();
+                
                 populateExamSelects();
+                populateStudentSelects();
                 displayMarks();
             } catch(e) { console.error(e); }
         }
@@ -631,15 +616,23 @@
         function populateExamSelects() {
             const examSelect = document.getElementById('selectExam');
             const resultExam = document.getElementById('resultExam');
-            if (examSelect) examSelect.innerHTML = '<option value="">Select Exam</option>' + allExams.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+            if (examSelect) examSelect.innerHTML = '<option value="">Select Exam</option>' + allExams.map(e => `<option value="${e.id}">${e.name} (${e.examDate || ''})</option>`).join('');
             if (resultExam) resultExam.innerHTML = '<option value="">Select Exam</option>' + allExams.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
         }
 
         function displayMarks() {
             const tbody = document.getElementById('marksTableBody');
             if (!tbody) return;
-            if (!allMarks.length) { tbody.innerHTML = '<tr><td colspan="6">No marks added yet</td></tr>'; return; }
-            tbody.innerHTML = allMarks.map(m => {
+            if (!allMarks.length) { tbody.innerHTML = '<tr><td colspan="6">No marks added yetSedan'; return; }
+            
+            // Fix: Extract studentId and examId from nested objects
+            const fixedMarks = allMarks.map(m => ({
+                ...m,
+                studentId: m.studentId || (m.student ? m.student.id : null),
+                examId: m.examId || (m.exam ? m.exam.id : null)
+            }));
+            
+            tbody.innerHTML = fixedMarks.map(m => {
                 const student = allStudents.find(s => s.id === m.studentId);
                 const exam = allExams.find(e => e.id === m.examId);
                 return `<tr>
@@ -662,18 +655,6 @@
         }
 
         // ============ RESULTS FUNCTIONS ============
-        async function loadResultsData() {
-            try {
-                const [examsRes, marksRes] = await Promise.all([
-                    fetch('http://localhost:8080/api/exams'),
-                    fetch('http://localhost:8080/api/marks')
-                ]);
-                allExams = await examsRes.json();
-                allMarks = await marksRes.json();
-                populateExamSelects();
-            } catch(e) { console.error(e); }
-        }
-
         function generateResult() {
             const examId = document.getElementById('resultExam').value;
             const studentId = document.getElementById('resultStudent').value;
@@ -681,7 +662,11 @@
             
             const student = allStudents.find(s => s.id == studentId);
             const exam = allExams.find(e => e.id == examId);
-            const studentMarks = allMarks.filter(m => m.studentId == studentId && m.examId == examId);
+            const studentMarks = allMarks.filter(m => {
+                const mkStudentId = m.studentId || (m.student ? m.student.id : null);
+                const mkExamId = m.examId || (m.exam ? m.exam.id : null);
+                return mkStudentId == studentId && mkExamId == examId;
+            });
             
             if (!studentMarks.length) { document.getElementById('reportCardContainer').innerHTML = '<div class="card"><p style="text-align:center">No marks found for this student in this exam.</p></div>'; return; }
             
@@ -728,22 +713,18 @@
 
         function printReportCard() {
             const printContent = document.getElementById('reportCard').cloneNode(true);
-            const originalTitle = document.title;
-            document.title = 'Student Report Card';
             const printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Student Report Card</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><style>body{font-family:Arial;padding:20px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ddd;padding:8px;text-align:center;}th{background:#667eea;color:white;}.result-summary{padding:15px;text-align:center;}.grade-Aplus,.grade-A{background:#c6f6d5;}.grade-Bplus,.grade-B{background:#feebc8;}.grade-Cplus,.grade-C{background:#fed7d7;}.grade-F{background:#fed7d7;}</style></head><body>' + printContent.innerHTML + '</body></html>');
+            printWindow.document.write('<html><head><title>Student Report Card</title><style>body{font-family:Arial;padding:20px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ddd;padding:8px;text-align:center;}th{background:#667eea;color:white;}.result-summary{padding:15px;text-align:center;}</style></head><body>' + printContent.innerHTML + '</body></html>');
             printWindow.document.close();
             printWindow.print();
-            document.title = originalTitle;
         }
 
         function downloadReportCardPDF() {
             const element = document.getElementById('reportCard');
-            const opt = { margin: [10,10,10,10], filename: `report_card_${Date.now()}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-            html2pdf().set(opt).from(element).save();
+            html2pdf().set({ margin: 10, filename: `report_card_${Date.now()}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save();
         }
 
-        // ============ Export Functions ============
+        // ============ EXPORT FUNCTIONS ============
         function downloadCSV() {
             if (!filteredStudents.length) { showMessage('No students to export!', 'error'); return; }
             let csv = "ID,Roll Number,Name,Email,Student Phone,Father Name,Mother Name,Parent Phone,Class,Course,Age,Status\n";
