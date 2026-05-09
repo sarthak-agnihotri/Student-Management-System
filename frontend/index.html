@@ -99,7 +99,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
@@ -249,6 +249,11 @@
             color: white;
         }
 
+        .btn-idcard {
+            background: #805ad5;
+            color: white;
+        }
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -323,7 +328,7 @@
         }
 
         th, td {
-            padding: 14px;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid #e0e0e0;
         }
@@ -455,7 +460,7 @@
             margin: 2% auto;
             padding: 0;
             width: 90%;
-            max-width: 480px;
+            max-width: 500px;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: slideIn 0.3s;
@@ -538,7 +543,7 @@
 
         .detail-label {
             font-weight: 600;
-            width: 85px;
+            width: 90px;
             color: #667eea;
             font-size: 14px;
         }
@@ -605,6 +610,92 @@
             border-left: 4px solid #f56565;
         }
 
+        /* ID Card Styles */
+        .id-card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .id-card {
+            width: 350px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .id-card-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .id-card-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .id-card-body {
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .id-card-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .id-card-details {
+            flex: 1;
+        }
+
+        .id-card-details .detail {
+            margin-bottom: 5px;
+            font-size: 11px;
+        }
+
+        .id-card-footer {
+            background: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+        }
+
+        body.dark .id-card {
+            background: #2d3748;
+        }
+
+        body.dark .id-card-footer {
+            background: #1a202c;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .id-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                margin: 10px;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .form-group {
@@ -624,10 +715,10 @@
                 justify-content: center;
             }
             table {
-                font-size: 12px;
+                font-size: 11px;
             }
             th, td {
-                padding: 8px;
+                padding: 6px;
             }
             .profile-detail {
                 flex-direction: column;
@@ -655,7 +746,7 @@
         <div id="message" class="message"></div>
 
         <!-- Status Summary Cards -->
-        <div class="status-summary" id="statusSummary">
+        <div class="status-summary">
             <div class="status-card active">
                 <div class="status-icon">🟢</div>
                 <div class="status-info">
@@ -681,10 +772,11 @@
 
         <div class="stats-bar">
             <div class="total-count" id="totalCount">📊 Total Students: 0</div>
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by name, email, or course..." onkeyup="searchStudents()">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search by name, roll number, email, or course..." onkeyup="searchStudents()">
             <div class="btn-group">
                 <button onclick="downloadCSV()" class="btn btn-csv">📥 Download CSV</button>
                 <button onclick="exportToPDF()" class="btn btn-pdf">📄 Export PDF</button>
+                <button onclick="batchPrintIDCards()" class="btn btn-idcard">🪪 ID Cards</button>
                 <button onclick="window.print()" class="btn btn-print">🖨️ Print</button>
             </div>
         </div>
@@ -695,6 +787,8 @@
                 <input type="text" id="name" placeholder="Full Name" required>
                 <input type="email" id="email" placeholder="Email Address" required>
                 <input type="tel" id="phone" placeholder="Phone Number (10 digits)">
+                <input type="text" id="rollNumber" placeholder="Roll Number (e.g., 001)" required>
+                <input type="text" id="studentClass" placeholder="Class (e.g., 10th, 12th, BCA)" required>
                 <input type="text" id="course" placeholder="Course Name" required>
                 <input type="number" id="age" placeholder="Age" required>
                 <select id="status">
@@ -714,9 +808,11 @@
                     <thead>
                         <tr>
                             <th onclick="sortTable('id')">ID <span class="sort-icon" id="sort-icon-id">↕️</span></th>
+                            <th onclick="sortTable('rollNumber')">Roll No <span class="sort-icon" id="sort-icon-rollNumber">↕️</span></th>
                             <th onclick="sortTable('name')">Name <span class="sort-icon" id="sort-icon-name">↕️</span></th>
                             <th onclick="sortTable('email')">Email <span class="sort-icon" id="sort-icon-email">↕️</span></th>
                             <th onclick="sortTable('phone')">Phone <span class="sort-icon" id="sort-icon-phone">↕️</span></th>
+                            <th onclick="sortTable('studentClass')">Class <span class="sort-icon" id="sort-icon-studentClass">↕️</span></th>
                             <th onclick="sortTable('course')">Course <span class="sort-icon" id="sort-icon-course">↕️</span></th>
                             <th onclick="sortTable('age')">Age <span class="sort-icon" id="sort-icon-age">↕️</span></th>
                             <th onclick="sortTable('status')">Status <span class="sort-icon" id="sort-icon-status">↕️</span></th>
@@ -724,7 +820,7 @@
                         </tr>
                     </thead>
                     <tbody id="studentTableBody">
-                        <tr><td colspan="8" style="text-align: center;">Loading students...Sedan
+                        <tr><td colspan="10" style="text-align: center;">Loading students...Sedan
                     </tbody>
                 </table>
             </div>
@@ -738,9 +834,7 @@
                 <h2>👤 Student Profile</h2>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Dynamic content will be inserted here -->
-            </div>
+            <div class="modal-body" id="modalBody"></div>
             <div class="modal-footer">
                 <button class="modal-btn" onclick="closeModal()">Close</button>
                 <button class="modal-btn" id="modalEditBtn">✏️ Edit Student</button>
@@ -753,8 +847,6 @@
         let currentEditId = null;
         let allStudents = [];
         let currentModalStudent = null;
-        
-        // Sorting variables
         let sortColumn = 'id';
         let sortOrder = 'asc';
 
@@ -769,28 +861,15 @@
         }
 
         function getStatusBadge(status) {
-            const classes = {
-                'ACTIVE': 'status-active',
-                'INACTIVE': 'status-inactive',
-                'GRADUATED': 'status-graduated'
-            };
-            const icons = {
-                'ACTIVE': '🟢',
-                'INACTIVE': '🔴',
-                'GRADUATED': '🟠'
-            };
+            const classes = { 'ACTIVE': 'status-active', 'INACTIVE': 'status-inactive', 'GRADUATED': 'status-graduated' };
+            const icons = { 'ACTIVE': '🟢', 'INACTIVE': '🔴', 'GRADUATED': '🟠' };
             return `<span class="status-badge ${classes[status] || 'status-active'}">${icons[status] || '🟢'} ${status || 'ACTIVE'}</span>`;
         }
 
-        // Update status counts
         function updateStatusCounts(students) {
-            const active = students.filter(s => s.status === 'ACTIVE').length;
-            const inactive = students.filter(s => s.status === 'INACTIVE').length;
-            const graduated = students.filter(s => s.status === 'GRADUATED').length;
-            
-            document.getElementById('activeCount').textContent = active;
-            document.getElementById('inactiveCount').textContent = inactive;
-            document.getElementById('graduatedCount').textContent = graduated;
+            document.getElementById('activeCount').textContent = students.filter(s => s.status === 'ACTIVE').length;
+            document.getElementById('inactiveCount').textContent = students.filter(s => s.status === 'INACTIVE').length;
+            document.getElementById('graduatedCount').textContent = students.filter(s => s.status === 'GRADUATED').length;
         }
 
         function getInitials(name) {
@@ -800,48 +879,19 @@
 
         function showProfile(student) {
             currentModalStudent = student;
-            const modalBody = document.getElementById('modalBody');
-            
-            const statusIcon = {
-                'ACTIVE': '🟢',
-                'INACTIVE': '🔴',
-                'GRADUATED': '🟠'
-            };
-            
-            modalBody.innerHTML = `
-                <div class="profile-avatar">
-                    <div class="avatar-circle">${getInitials(student.name)}</div>
-                </div>
-                <div class="profile-detail">
-                    <div class="detail-label">📋 ID:</div>
-                    <div class="detail-value">${student.id}</div>
-                </div>
-                <div class="profile-detail">
-                    <div class="detail-label">👤 Name:</div>
-                    <div class="detail-value">${escapeHtml(student.name)}</div>
-                </div>
-                <div class="profile-detail">
-                    <div class="detail-label">📧 Email:</div>
-                    <div class="detail-value">${escapeHtml(student.email)}</div>
-                </div>
-                <div class="profile-detail">
-                    <div class="detail-label">📞 Phone:</div>
-                    <div class="detail-value">${student.phone || 'Not provided'}</div>
-                </div>
-                <div class="profile-detail">
-                    <div class="detail-label">📚 Course:</div>
-                    <div class="detail-value">${escapeHtml(student.course)}</div>
-                </div>
-                <div class="profile-detail">
-                    <div class="detail-label">🎂 Age:</div>
-                    <div class="detail-value">${student.age} years</div>
-                </div>
-                <div class="profile-detail">
-                    <div class="detail-label">📊 Status:</div>
-                    <div class="detail-value">${statusIcon[student.status] || '🟢'} ${student.status || 'ACTIVE'}</div>
-                </div>
+            const statusIcon = { 'ACTIVE': '🟢', 'INACTIVE': '🔴', 'GRADUATED': '🟠' };
+            document.getElementById('modalBody').innerHTML = `
+                <div class="profile-avatar"><div class="avatar-circle">${getInitials(student.name)}</div></div>
+                <div class="profile-detail"><div class="detail-label">🎫 Roll No:</div><div class="detail-value">${student.rollNumber || 'Not assigned'}</div></div>
+                <div class="profile-detail"><div class="detail-label">📋 ID:</div><div class="detail-value">${student.id}</div></div>
+                <div class="profile-detail"><div class="detail-label">👤 Name:</div><div class="detail-value">${escapeHtml(student.name)}</div></div>
+                <div class="profile-detail"><div class="detail-label">📧 Email:</div><div class="detail-value">${escapeHtml(student.email)}</div></div>
+                <div class="profile-detail"><div class="detail-label">📞 Phone:</div><div class="detail-value">${student.phone || 'Not provided'}</div></div>
+                <div class="profile-detail"><div class="detail-label">📖 Class:</div><div class="detail-value">${student.studentClass || 'Not assigned'}</div></div>
+                <div class="profile-detail"><div class="detail-label">📚 Course:</div><div class="detail-value">${escapeHtml(student.course)}</div></div>
+                <div class="profile-detail"><div class="detail-label">🎂 Age:</div><div class="detail-value">${student.age} years</div></div>
+                <div class="profile-detail"><div class="detail-label">📊 Status:</div><div class="detail-value">${statusIcon[student.status] || '🟢'} ${student.status || 'ACTIVE'}</div></div>
             `;
-            
             document.getElementById('profileModal').style.display = 'block';
         }
 
@@ -853,262 +903,182 @@
         function editFromModal() {
             if (currentModalStudent) {
                 closeModal();
-                setTimeout(() => {
-                    editStudent(currentModalStudent.id);
-                }, 100);
+                setTimeout(() => editStudent(currentModalStudent.id), 100);
             }
         }
 
         function sortTable(column) {
-            if (sortColumn === column) {
-                sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-            } else {
-                sortColumn = column;
-                sortOrder = 'asc';
-            }
-            
+            if (sortColumn === column) sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            else { sortColumn = column; sortOrder = 'asc'; }
             updateSortIcons();
-            
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            let dataToSort = [...allStudents];
-            
-            if (searchTerm !== '') {
-                dataToSort = dataToSort.filter(s => 
-                    s.name.toLowerCase().includes(searchTerm) ||
-                    s.email.toLowerCase().includes(searchTerm) ||
-                    (s.course && s.course.toLowerCase().includes(searchTerm)) ||
-                    (s.phone && s.phone.includes(searchTerm))
-                );
-            }
-            
-            const sorted = dataToSort.sort((a, b) => {
-                let valA = a[column];
-                let valB = b[column];
-                
-                if (column === 'age' || column === 'id') {
-                    return sortOrder === 'asc' ? valA - valB : valB - valA;
-                } else if (column === 'status') {
+
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            let data = term === '' ? [...allStudents] : allStudents.filter(s => 
+                s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || 
+                (s.rollNumber && s.rollNumber.includes(term)) || (s.course && s.course.toLowerCase().includes(term)) ||
+                (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term))
+            );
+
+            const sorted = data.sort((a, b) => {
+                let valA = a[column], valB = b[column];
+                if (column === 'age' || column === 'id') return sortOrder === 'asc' ? valA - valB : valB - valA;
+                if (column === 'status') {
                     const order = { 'ACTIVE': 1, 'GRADUATED': 2, 'INACTIVE': 3 };
-                    valA = order[valA] || 999;
-                    valB = order[valB] || 999;
-                    return sortOrder === 'asc' ? valA - valB : valB - valA;
-                } else {
-                    valA = (valA || '').toLowerCase();
-                    valB = (valB || '').toLowerCase();
-                    if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
-                    if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
-                    return 0;
+                    return sortOrder === 'asc' ? (order[valA]||999) - (order[valB]||999) : (order[valB]||999) - (order[valA]||999);
                 }
+                valA = (valA || '').toLowerCase(); valB = (valB || '').toLowerCase();
+                if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                return 0;
             });
-            
             displayStudents(sorted);
-            updateTotalCount(sorted.length);
+            document.getElementById('totalCount').textContent = `📊 Total Students: ${sorted.length}`;
             updateStatusCounts(sorted);
         }
 
         function updateSortIcons() {
-            const columns = ['id', 'name', 'email', 'phone', 'course', 'age', 'status'];
-            columns.forEach(col => {
+            const cols = ['id', 'rollNumber', 'name', 'email', 'phone', 'studentClass', 'course', 'age', 'status'];
+            cols.forEach(col => {
                 const icon = document.getElementById(`sort-icon-${col}`);
                 if (icon) {
-                    if (sortColumn === col) {
-                        icon.textContent = sortOrder === 'asc' ? '↑' : '↓';
-                        icon.style.opacity = '1';
-                    } else {
-                        icon.textContent = '↕️';
-                        icon.style.opacity = '0.5';
-                    }
+                    icon.textContent = sortColumn === col ? (sortOrder === 'asc' ? '↑' : '↓') : '↕️';
+                    icon.style.opacity = sortColumn === col ? '1' : '0.5';
                 }
             });
-        }
-
-        function exportToPDF() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            let studentsToExport = [...allStudents];
-            
-            if (term !== '') {
-                studentsToExport = studentsToExport.filter(s => 
-                    s.name.toLowerCase().includes(term) ||
-                    s.email.toLowerCase().includes(term) ||
-                    (s.course && s.course.toLowerCase().includes(term))
-                );
-            }
-            
-            if (studentsToExport.length === 0) {
-                showMessage('No students to export!', 'error');
-                return;
-            }
-            
-            const pdfContent = document.createElement('div');
-            pdfContent.style.padding = '20px';
-            pdfContent.style.fontFamily = 'Arial, sans-serif';
-            
-            pdfContent.innerHTML = `
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h1 style="color: #667eea;">🎓 Student Management System</h1>
-                    <p>Generated on: ${new Date().toLocaleString()}</p>
-                    <hr>
-                </div>
-                <h2>Student List</h2>
-                <p><strong>Total Students:</strong> ${studentsToExport.length}</p>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr><th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">ID</th>
-                            <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Name</th>
-                            <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Email</th>
-                            <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Course</th>
-                            <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Age</th>
-                            <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${studentsToExport.map(s => `
-                            <tr>
-                                <td style="border:1px solid #ddd;padding:8px;">${s.id}</td>
-                                <td style="border:1px solid #ddd;padding:8px;">${escapeHtml(s.name)}</td>
-                                <td style="border:1px solid #ddd;padding:8px;">${escapeHtml(s.email)}</td>
-                                <td style="border:1px solid #ddd;padding:8px;">${escapeHtml(s.course)}</td>
-                                <td style="border:1px solid #ddd;padding:8px;">${s.age}</td>
-                                <td style="border:1px solid #ddd;padding:8px;">${s.status || 'ACTIVE'}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-                <div style="margin-top:30px;text-align:center;color:#888;">
-                    <hr><p>System Generated Document</p>
-                </div>
-            `;
-            
-            const options = {
-                margin: [10, 10, 10, 10],
-                filename: `students_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            
-            html2pdf().set(options).from(pdfContent).save();
-            showMessage(`PDF exported with ${studentsToExport.length} students!`, 'success');
-        }
-
-        async function loadStudents() {
-            try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error('Failed to fetch');
-                allStudents = await response.json();
-                sortTable('id');
-                updateStatusCounts(allStudents);
-            } catch (error) {
-                document.getElementById('studentTableBody').innerHTML = 
-                    `<tr><td colspan="8" style="text-align: center; color: red;">Error loading students. Make sure backend is running. Sedan`;
-            }
         }
 
         function searchStudents() {
             const term = document.getElementById('searchInput').value.toLowerCase();
-            if (term === '') {
-                sortTable(sortColumn);
-                updateStatusCounts(allStudents);
-                return;
+            let filtered = [...allStudents];
+            if (term !== '') {
+                filtered = allStudents.filter(s => 
+                    s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || 
+                    (s.rollNumber && s.rollNumber.includes(term)) || (s.course && s.course.toLowerCase().includes(term)) ||
+                    (s.studentClass && s.studentClass.toLowerCase().includes(term)) || (s.phone && s.phone.includes(term))
+                );
             }
-            const filtered = allStudents.filter(s => 
-                s.name.toLowerCase().includes(term) ||
-                s.email.toLowerCase().includes(term) ||
-                (s.course && s.course.toLowerCase().includes(term)) ||
-                (s.phone && s.phone.includes(term))
-            );
-            
-            const sortedFiltered = [...filtered].sort((a, b) => {
-                let valA = a[sortColumn];
-                let valB = b[sortColumn];
-                if (sortColumn === 'age' || sortColumn === 'id') {
-                    return sortOrder === 'asc' ? valA - valB : valB - valA;
-                } else if (sortColumn === 'status') {
+            const sorted = [...filtered].sort((a, b) => {
+                let valA = a[sortColumn], valB = b[sortColumn];
+                if (sortColumn === 'age' || sortColumn === 'id') return sortOrder === 'asc' ? valA - valB : valB - valA;
+                if (sortColumn === 'status') {
                     const order = { 'ACTIVE': 1, 'GRADUATED': 2, 'INACTIVE': 3 };
-                    valA = order[valA] || 999;
-                    valB = order[valB] || 999;
-                    return sortOrder === 'asc' ? valA - valB : valB - valA;
-                } else {
-                    valA = (valA || '').toLowerCase();
-                    valB = (valB || '').toLowerCase();
-                    if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
-                    if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
-                    return 0;
+                    return sortOrder === 'asc' ? (order[valA]||999) - (order[valB]||999) : (order[valB]||999) - (order[valA]||999);
                 }
+                valA = (valA || '').toLowerCase(); valB = (valB || '').toLowerCase();
+                if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                return 0;
             });
-            displayStudents(sortedFiltered);
-            updateTotalCount(sortedFiltered.length);
-            updateStatusCounts(sortedFiltered);
+            displayStudents(sorted);
+            document.getElementById('totalCount').textContent = `📊 Total Students: ${sorted.length}`;
+            updateStatusCounts(sorted);
         }
 
         function displayStudents(students) {
             const tbody = document.getElementById('studentTableBody');
-            if (students.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No students found. Sedan';
-                return;
-            }
+            if (students.length === 0) { tbody.innerHTML = '<tr><td colspan="10">No students found. Sedan'; return; }
             tbody.innerHTML = students.map(s => `
                 <tr>
                     <td>${s.id}</td>
-                    <td class="clickable-name" onclick="showProfile(${JSON.stringify(s).replace(/"/g, '&quot;')})">${escapeHtml(s.name)}</td>
+                    <td>${s.rollNumber || '-'}</td>
+                    <td class="clickable-name" onclick='showProfile(${JSON.stringify(s).replace(/'/g, "&#39;")})'>${escapeHtml(s.name)}</td>
                     <td>${escapeHtml(s.email)}</td>
-                    <td>${s.phone ? escapeHtml(s.phone) : '-'}</td>
+                    <td>${s.phone || '-'}</td>
+                    <td>${s.studentClass || '-'}</td>
                     <td>${escapeHtml(s.course)}</td>
                     <td>${s.age}</td>
                     <td>${getStatusBadge(s.status)}</td>
-                    <td>
-                        <button class="edit-btn" onclick="editStudent(${s.id})">✏️ Edit</button>
-                        <button class="delete-btn" onclick="deleteStudent(${s.id})">🗑️ Delete</button>
-                    </td>
-                </tr>
-            `).join('');
+                    <td><button class="edit-btn" onclick="editStudent(${s.id})">✏️ Edit</button><button class="delete-btn" onclick="deleteStudent(${s.id})">🗑️ Delete</button></td>
+                 `
+            ).join('');
         }
 
-        function updateTotalCount(count) {
-            document.getElementById('totalCount').textContent = `📊 Total Students: ${count}`;
+        function exportToPDF() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            let students = term === '' ? [...allStudents] : allStudents.filter(s => 
+                s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || (s.course && s.course.toLowerCase().includes(term))
+            );
+            if (students.length === 0) { showMessage('No students to export!', 'error'); return; }
+
+            const pdfContent = document.createElement('div');
+            pdfContent.innerHTML = `
+                <div style="text-align:center; margin-bottom:30px;"><h1 style="color:#667eea;">🎓 Student Management System</h1><p>Generated on: ${new Date().toLocaleString()}</p><hr></div>
+                <h2>Student List</h2><p>Total Students: ${students.length}</p>
+                <table style="width:100%; border-collapse:collapse;">
+                    <thead><tr><th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">ID</th>
+                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Roll No</th>
+                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Name</th>
+                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Email</th>
+                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Class</th>
+                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Course</th>
+                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Age</th>
+                    <th style="border:1px solid #ddd;padding:8px;background:#667eea;color:white;">Status</th></tr></thead>
+                    <tbody>${students.map(s => `<tr><td>${s.id}</td><td>${s.rollNumber || '-'}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.email)}</td><td>${s.studentClass || '-'}</td><td>${escapeHtml(s.course)}</td><td>${s.age}</td><td>${s.status || 'ACTIVE'}</td></tr>`).join('')}</tbody>
+                </table>
+                <div style="margin-top:30px;text-align:center;"><hr><p>System Generated Document</p></div>
+            `;
+            html2pdf().set({ margin: [10,10,10,10], filename: `students_${new Date().toISOString().slice(0,19)}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(pdfContent).save();
+            showMessage(`PDF exported with ${students.length} students!`, 'success');
+        }
+
+        function batchPrintIDCards() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            let students = term === '' ? [...allStudents] : allStudents.filter(s => s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term));
+            if (students.length === 0) { showMessage('No students to print ID cards!', 'error'); return; }
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html><head><title>Student ID Cards</title><style>
+                    *{margin:0;padding:0;box-sizing:border-box;}
+                    body{font-family:Arial;background:#f0f2f5;padding:20px;}
+                    .id-card{width:350px;background:white;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,0.2);margin:10px auto;overflow:hidden;page-break-inside:avoid;}
+                    .id-card-header{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:15px;text-align:center;}
+                    .id-card-body{padding:20px;display:flex;gap:15px;}
+                    .id-card-avatar{width:100px;height:100px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:bold;color:white;}
+                    .id-card-details{flex:1;}
+                    .id-card-details .detail{margin-bottom:5px;font-size:11px;}
+                    .id-card-footer{background:#f8f9fa;padding:10px;text-align:center;font-size:10px;}
+                    @media print{.id-card{box-shadow:none;border:1px solid #ddd;margin:10px;}}
+                </style></head>
+                <body><div style="display:flex;flex-wrap:wrap;justify-content:center;">${students.map(s => `
+                    <div class="id-card"><div class="id-card-header"><h3>🎓 STUDENT ID CARD</h3><p>Valid for Academic Year 2026</p></div>
+                    <div class="id-card-body"><div class="id-card-avatar">${getInitials(s.name)}</div>
+                    <div class="id-card-details"><div class="detail"><strong>Roll No:</strong> ${s.rollNumber || 'N/A'}</div>
+                    <div class="detail"><strong>Name:</strong> ${escapeHtml(s.name)}</div>
+                    <div class="detail"><strong>Class:</strong> ${s.studentClass || 'N/A'}</div>
+                    <div class="detail"><strong>Course:</strong> ${escapeHtml(s.course)}</div>
+                    <div class="detail"><strong>Status:</strong> ${s.status || 'ACTIVE'}</div></div></div>
+                    <div class="id-card-footer"><p>📞 ${s.phone || 'No phone'} | 📧 ${s.email}</p><p>🔹 Valid ID Card • Keep with you always 🔹</p></div></div>
+                `).join('')}</div><script>window.onload=()=>setTimeout(()=>window.print(),500);<\/script></body></html>
+            `);
+            printWindow.document.close();
+            showMessage(`Printing ${students.length} ID cards...`, 'success');
+        }
+
+        async function loadStudents() {
+            try {
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error();
+                allStudents = await res.json();
+                sortTable('id');
+            } catch (error) {
+                document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="10" style="color:red;">Error loading students. Is backend running?</td></tr>';
+            }
         }
 
         function downloadCSV() {
             const term = document.getElementById('searchInput').value.toLowerCase();
-            let students = [...allStudents];
-            if (term !== '') {
-                students = students.filter(s => 
-                    s.name.toLowerCase().includes(term) ||
-                    s.email.toLowerCase().includes(term) ||
-                    (s.course && s.course.toLowerCase().includes(term))
-                );
-            }
-            
-            if (students.length === 0) {
-                showMessage('No students to export!', 'error');
-                return;
-            }
-            
-            let csv = "ID,Name,Email,Phone,Course,Age,Status\n";
-            students.forEach(s => {
-                csv += `"${s.id}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}"\n`;
-            });
-            
+            let students = term === '' ? [...allStudents] : allStudents.filter(s => s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term) || (s.course && s.course.toLowerCase().includes(term)));
+            if (students.length === 0) { showMessage('No students to export!', 'error'); return; }
+            let csv = "ID,Roll Number,Name,Email,Phone,Class,Course,Age,Status\n";
+            students.forEach(s => csv += `"${s.id}","${s.rollNumber || ''}","${escapeCsv(s.name)}","${escapeCsv(s.email)}","${s.phone || ''}","${s.studentClass || ''}","${escapeCsv(s.course)}","${s.age}","${s.status || 'ACTIVE'}"\n`);
             const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
+            a.href = URL.createObjectURL(blob);
             a.download = `students_${new Date().toISOString().slice(0,19)}.csv`;
             a.click();
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(a.href);
             showMessage(`Downloaded ${students.length} students!`, 'success');
-        }
-
-        function escapeCsv(text) {
-            if (!text) return '';
-            return text.replace(/"/g, '""');
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
         }
 
         async function saveStudent() {
@@ -1116,55 +1086,38 @@
                 name: document.getElementById('name').value.trim(),
                 email: document.getElementById('email').value.trim(),
                 phone: document.getElementById('phone').value.trim(),
+                rollNumber: document.getElementById('rollNumber').value.trim(),
+                studentClass: document.getElementById('studentClass').value.trim(),
                 course: document.getElementById('course').value.trim(),
                 age: parseInt(document.getElementById('age').value),
                 status: document.getElementById('status').value
             };
-
-            if (!student.name || !student.email || !student.course || !student.age) {
-                showMessage('Please fill all required fields!', 'error');
-                return;
-            }
-            if (student.age < 18 || student.age > 100) {
-                showMessage('Age must be between 18 and 100!', 'error');
-                return;
-            }
-            if (student.phone && !/^\d{10}$/.test(student.phone)) {
-                showMessage('Phone number must be 10 digits!', 'error');
-                return;
-            }
-
+            if (!student.name || !student.email || !student.course || !student.age) { showMessage('Please fill all required fields!', 'error'); return; }
+            if (student.age < 18 || student.age > 100) { showMessage('Age must be 18-100!', 'error'); return; }
+            if (student.phone && !/^\d{10}$/.test(student.phone)) { showMessage('Phone must be 10 digits!', 'error'); return; }
             try {
                 if (currentEditId) {
-                    await fetch(`${API_URL}/${currentEditId}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(student)
-                    });
+                    await fetch(`${API_URL}/${currentEditId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(student) });
                     showMessage('Student updated!', 'success');
                     cancelEdit();
                 } else {
-                    await fetch(API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(student)
-                    });
+                    await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(student) });
                     showMessage('Student added!', 'success');
                     clearForm();
                 }
                 await loadStudents();
-            } catch (error) {
-                showMessage(error.message, 'error');
-            }
+            } catch (error) { showMessage(error.message, 'error'); }
         }
 
         async function editStudent(id) {
             closeModal();
-            const response = await fetch(`${API_URL}/${id}`);
-            const s = await response.json();
+            const res = await fetch(`${API_URL}/${id}`);
+            const s = await res.json();
             document.getElementById('name').value = s.name;
             document.getElementById('email').value = s.email;
             document.getElementById('phone').value = s.phone || '';
+            document.getElementById('rollNumber').value = s.rollNumber || '';
+            document.getElementById('studentClass').value = s.studentClass || '';
             document.getElementById('course').value = s.course;
             document.getElementById('age').value = s.age;
             document.getElementById('status').value = s.status || 'ACTIVE';
@@ -1183,45 +1136,15 @@
             }
         }
 
-        function cancelEdit() {
-            clearForm();
-            currentEditId = null;
-            document.getElementById('formTitle').textContent = '➕ Add New Student';
-            document.getElementById('saveBtn').textContent = 'Add Student';
-            document.getElementById('cancelBtn').style.display = 'none';
-        }
+        function cancelEdit() { clearForm(); currentEditId = null; document.getElementById('formTitle').textContent = '➕ Add New Student'; document.getElementById('saveBtn').textContent = 'Add Student'; document.getElementById('cancelBtn').style.display = 'none'; }
+        function clearForm() { ['name', 'email', 'phone', 'rollNumber', 'studentClass', 'course', 'age'].forEach(id => document.getElementById(id).value = ''); document.getElementById('status').value = 'ACTIVE'; }
+        function escapeCsv(text) { return text ? text.replace(/"/g, '""') : ''; }
+        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        function toggleDarkMode() { document.body.classList.toggle('dark'); localStorage.setItem('darkMode', document.body.classList.contains('dark')); document.querySelector('.btn-dark').textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode'; }
 
-        function clearForm() {
-            document.getElementById('name').value = '';
-            document.getElementById('email').value = '';
-            document.getElementById('phone').value = '';
-            document.getElementById('course').value = '';
-            document.getElementById('age').value = '';
-            document.getElementById('status').value = 'ACTIVE';
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark');
-            const btn = document.querySelector('.btn-dark');
-            btn.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
-            localStorage.setItem('darkMode', document.body.classList.contains('dark'));
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('profileModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        }
-
-        // Set modal edit button
+        window.onclick = (event) => { if (event.target === document.getElementById('profileModal')) closeModal(); };
         document.getElementById('modalEditBtn').onclick = editFromModal;
-
-        if (localStorage.getItem('darkMode') === 'true') {
-            toggleDarkMode();
-        }
-
+        if (localStorage.getItem('darkMode') === 'true') toggleDarkMode();
         loadStudents();
     </script>
 </body>

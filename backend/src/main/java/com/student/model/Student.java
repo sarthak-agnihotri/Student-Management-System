@@ -35,16 +35,25 @@ public class Student {
     @Column(nullable = false)
     private String status = "ACTIVE";
     
-    // ✅ NEW: Roll Number field
+    // Roll Number field
     @Column(unique = true)
     private String rollNumber;
     
-    // ✅ NEW: Student Class field (e.g., 10th, 12th)
+    // Student Class field (e.g., 10th, 12th)
     private String studentClass;
+    
+    // ✅ NEW: Parent Details fields
+    private String fatherName;
+    private String motherName;
+    
+    @Column(length = 10)
+    @Pattern(regexp = "^[0-9]{10}$", message = "Parent phone number must be 10 digits")
+    private String parentPhone;
     
     public Student() {}
     
-    public Student(String name, String email, String course, int age, String phone, String status, String rollNumber, String studentClass) {
+    public Student(String name, String email, String course, int age, String phone, String status, 
+                   String rollNumber, String studentClass, String fatherName, String motherName, String parentPhone) {
         this.name = name;
         this.email = email;
         this.course = course;
@@ -53,6 +62,9 @@ public class Student {
         this.status = status != null ? status : "ACTIVE";
         this.rollNumber = rollNumber;
         this.studentClass = studentClass;
+        this.fatherName = fatherName;
+        this.motherName = motherName;
+        this.parentPhone = parentPhone;
     }
     
     // Getters and Setters
@@ -77,11 +89,19 @@ public class Student {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     
-    // ✅ NEW: Roll Number getter and setter
     public String getRollNumber() { return rollNumber; }
     public void setRollNumber(String rollNumber) { this.rollNumber = rollNumber; }
     
-    // ✅ NEW: Student Class getter and setter
     public String getStudentClass() { return studentClass; }
     public void setStudentClass(String studentClass) { this.studentClass = studentClass; }
+    
+    // ✅ NEW: Parent Details Getters and Setters
+    public String getFatherName() { return fatherName; }
+    public void setFatherName(String fatherName) { this.fatherName = fatherName; }
+    
+    public String getMotherName() { return motherName; }
+    public void setMotherName(String motherName) { this.motherName = motherName; }
+    
+    public String getParentPhone() { return parentPhone; }
+    public void setParentPhone(String parentPhone) { this.parentPhone = parentPhone; }
 }
