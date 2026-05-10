@@ -64,30 +64,39 @@ A **production-ready, containerized full-stack application** for managing studen
 | **Java** | OpenJDK | 11 |
 
 ---
-🐳 Docker Architecture
-┌─────────────────────────────────────────────────────────────────┐
-│                         DOCKER COMPOSE                          │
-│                       (docker-compose up)                       │
-│                                                                 │
-│   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│   │    MySQL     │  │   Backend    │  │   Frontend   │         │
-│   │   :3306      │◀─│   :8080      │──▶   :3000      │         │
-│   │  (Database)  │  │ (Spring Boot)│  │   (nginx)    │         │
-│   └──────┬───────┘  └──────────────┘  └──────────────┘         │
-│          │                                                      │
-│          ▼                                                      │
-│   ┌──────────────┐                                             │
-│   │    Volume    │  (Data persists after container restart)    │
-│   │  mysql-data  │                                             │
-│   └──────────────┘                                             │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-                    ┌──────────────────┐
-                    │   Web Browser    │
-                    │  localhost:3000  │
-                    └──────────────────┘
+## 🐳 Docker Architecture
+
+```mermaid
+flowchart TB
+    subgraph Host [💻 User Computer]
+        Browser[🌐 Web Browser<br/>localhost:3000]
+    end
+
+    subgraph Docker [🐳 Docker Compose]
+        
+        subgraph FrontendService [Frontend Service]
+            Frontend[🖥️ Nginx Container<br/>Port: 3000]
+        end
+
+        subgraph BackendService [Backend Service]
+            Backend[⚙️ Spring Boot Container<br/>Port: 8080]
+        end
+
+        subgraph DatabaseService [Database Service]
+            MySQL[🗄️ MySQL Container<br/>Port: 3306]
+            Volume[💾 Docker Volume<br/>mysql-data]
+        end
+
+    end
+
+    Browser -->|1. Opens URL| Frontend
+    Frontend -->|2. API Request| Backend
+    Backend -->|3. SQL Query| MySQL
+    MySQL -->|4. Read/Write| Volume
+    MySQL -->|5. Return Data| Backend
+    Backend -->|6. JSON Response| Frontend
+    Frontend -->|7. Display Page| Browser
+```
 ---
 ## 🚀 Quick Start
 
