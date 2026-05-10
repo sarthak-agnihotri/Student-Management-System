@@ -65,7 +65,6 @@ A **production-ready, containerized full-stack application** for managing studen
 
 ---
 🐳 Docker Architecture
-text
 ┌─────────────────────────────────────────────────────────────────┐
 │                         DOCKER COMPOSE                          │
 │                       (docker-compose up)                       │
@@ -89,7 +88,6 @@ text
                     │   Web Browser    │
                     │  localhost:3000  │
                     └──────────────────┘
-
 ---
 ## 🚀 Quick Start
 
