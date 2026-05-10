@@ -64,7 +64,33 @@ A **production-ready, containerized full-stack application** for managing studen
 | **Java** | OpenJDK | 11 |
 
 ---
+🐳 Docker Architecture
+text
+┌─────────────────────────────────────────────────────────────────┐
+│                         DOCKER COMPOSE                          │
+│                       (docker-compose up)                       │
+│                                                                 │
+│   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│   │    MySQL     │  │   Backend    │  │   Frontend   │         │
+│   │   :3306      │◀─│   :8080      │──▶   :3000      │         │
+│   │  (Database)  │  │ (Spring Boot)│  │   (nginx)    │         │
+│   └──────┬───────┘  └──────────────┘  └──────────────┘         │
+│          │                                                      │
+│          ▼                                                      │
+│   ┌──────────────┐                                             │
+│   │    Volume    │  (Data persists after container restart)    │
+│   │  mysql-data  │                                             │
+│   └──────────────┘                                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+                    ┌──────────────────┐
+                    │   Web Browser    │
+                    │  localhost:3000  │
+                    └──────────────────┘
 
+---
 ## 🚀 Quick Start
 
 ### Prerequisites
